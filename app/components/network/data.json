@@ -1,0 +1,29 @@
+[
+  {
+    "id": "7669aa57-0069-4b96-a9cf-e3f66ca6c2d5",
+    "name": "QA-7669aa57-0069-4b96-a9cf-e3f66ca6c2d5",
+    "state": "正在运行",
+    "templatename": "CentOS 5.6 (64-bit) no GUI (Simulator)",
+    "serviceofferingname": "1核+1Ghz+1GMemory",
+    "created": "2017-05-02 11:11:12",
+    "right": "查看IP地址"
+  },
+  {
+    "id": "7669aa57-0069-4b96-a9cf-e3f66ca6c2d5",
+    "name": "QA-7669aa57-0069-4b96-a9cf-e3f66ca6c2d5",
+    "state": "正在运行",
+    "templatename": "CentOS 5.6 (64-bit) no GUI (Simulator)",
+    "serviceofferingname": "1核+1Ghz+1GMemory",
+    "created": "2017-05-02 11:11:12",
+    "right": "查看IP地址"
+  },
+  {
+    "id": "7669aa57-0069-4b96-a9cf-e3f66ca6c2d5",
+    "name": "QA-7669aa57-0069-4b96-a9cf-e3f66ca6c2d5",
+    "state": "正在运行",
+    "templatename": "CentOS 5.6 (64-bit) no GUI (Simulator)",
+    "serviceofferingname": "1核+1Ghz+1GMemory",
+    "created": "2017-05-02 11:11:12",
+    "right": "查看IP地址"
+  }
+]
