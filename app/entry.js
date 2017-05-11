@@ -18,8 +18,8 @@ import feelog from './components/fee/feelog.vue';
 import feeEst from './components/fee/feeEst.vue';
 import rechargelog from './components/rechargeLog/rechargelog.vue';
 import usercenter from './components/user/usercenter.vue';
-
-//import Slider from './package/slider/src/index.vue'
+import order from './components/workOrder/order.vue';
+//import Slider from './package/slider/src/index.vue';
 const router = new VueRouter({
     routes: [
         { path: '/host', component: host },
@@ -34,7 +34,8 @@ const router = new VueRouter({
         { path: '/feelog', component: feelog },
         { path: '/feeest', component: feeEst },
         { path: '/rechargelog', component: rechargelog },
-        { path: '/usercenter', component: usercenter }
+        { path: '/usercenter', component: usercenter },
+        { path: '/order', component: order }
     ]
 })
 Vue.use(VueResource);
