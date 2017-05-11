@@ -24,6 +24,12 @@
                 <el-menu-item index="feelog">消费详情</el-menu-item>
                 <el-menu-item index="feeest">消费预估</el-menu-item>
             </el-submenu>
+            <el-submenu index="7">
+                <template slot="title">工单</template>
+                <el-menu-item index="neworder">新建工单</el-menu-item>
+                <el-menu-item index="myorder">我的工单</el-menu-item>
+
+            </el-submenu>
             <el-menu-item index="log">操作日志</el-menu-item>
         </el-menu>
 
