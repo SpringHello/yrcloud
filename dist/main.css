@@ -570,37 +570,20 @@ th[data-v-3967d71a]{
 }
 
 .form-wrapper[data-v-fa6e8ecc]{
-    width:350px;
+    width:60%;
+    margin:35px auto;
+}
+.title[data-v-fa6e8ecc]{
+    font-size:16px;
+    font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti, "Microsoft YaHei";
+    padding:12px 15px;
+    background-color: #cdd0de;
 }
 
 .table[data-v-1f7bcca6]{
     padding-top:15px;
 }
-.select[data-v-1f7bcca6]{
-    font-size:0px;
-    background-color: #ecf5ff;
-}
-.select .default[data-v-1f7bcca6]{
-    font-size:17px;
-    width: 120px;
-    display: inline-block;
-    text-align: center;
-    height: 43px;
-    border: 1px solid #e4e4e4;
-    border-top:none;
-    line-height: 43px;
-    box-sizing: border-box;
-}
-.select .hover[data-v-1f7bcca6]{
-    font-size:19px;
-    width: 120px;
-    display: inline-block;
-    text-align: center;
-    height: 43px;
-    border:none;
-    border-top:2px solid #2d91cf;
-    line-height: 43px;
-    background-color: white;
+.order-display[data-v-1f7bcca6]{
 }
 
 /*# sourceMappingURL=main.css.map*/

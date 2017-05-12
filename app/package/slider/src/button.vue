@@ -59,8 +59,13 @@
             },
             onDragging:function(event){
                 this.currentX = event.clientX;
-                let diff = (this.currentX-this.startX)/this.$parent.sliderSize*100;
+                console.log('this.currentX'+this.currentX)
+                console.log('this.startX'+this.startX)
+                console.log('this.$parent.$sliderSize'+this.$parent.$sliderSize)
+
+                let diff = (this.currentX-this.startX)/this.$parent.$sliderSize*100;
                 let newPosition = this.startPosition + diff;
+                console.log(newPosition);
                 this.setPosition(newPosition)
             },
             DraggingEnd:function(){
@@ -68,8 +73,11 @@
                 window.removeEventListener('mouseup',this.DraggingEnd)
             },
             setPosition(newPosition){
+                if(newPosition>100)
+                    newPosition=100;
+                if(newPosition<0)
+                    newPosition=0;
                 this.value = (newPosition/100)*(this.max-this.min);
-                console.log(this.value);
             }
         }
     }
@@ -77,9 +85,9 @@
 
 <style scoped>
     .com-slider-button{
-        width:25px;
-        height:30px;
-        background-color: #20a0ff;
+        width:16px;
+        height:24px;
+        background-color: #0095AC;
         cursor:pointer;
         position: absolute;
     }

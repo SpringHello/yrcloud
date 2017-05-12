@@ -24,7 +24,7 @@
                 </li>
             </ul>
         </header>
-        <y-slider></y-slider>
+
         <y-menu></y-menu>
         <router-view></router-view>
     </div>
@@ -33,10 +33,9 @@
 
 <script>
     import Ymenu from "./components/menu/menu.vue"
-    import main from './package/slider/src/main.vue'
     /*flow*/
     export default{
-        data(arg:string):object{
+        data(){
             return {
                 username:'未登录'
             };
@@ -64,7 +63,6 @@
         },
         components:{
             'y-menu':Ymenu,
-            'y-slider':main
         }
     }
 </script>

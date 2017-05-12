@@ -4,12 +4,17 @@
 import {Message,Loading} from 'element-ui';
 import Vue from 'vue';
 export default{
-    get(url,vm,attrOptions){
+    get(url,vm,attrOptions,successMessage){
         vm.$http.get(url).then(response=>{
-            if(response.ok==true&&response.status==200){
+            if(response.ok==true&&response.status==200&&response.body.status==1){
                 for(let attr in attrOptions){
                     vm[attr] = response.body[attrOptions[attr]];
                 }
+                if(successMessage)
+                    Message({
+                        message:successMessage,
+                        type:'success'
+                    });
             }else{
                 Message({
                     message:'获取数据失败',

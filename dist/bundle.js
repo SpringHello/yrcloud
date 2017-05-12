@@ -6524,12 +6524,16 @@ module.exports = BoundingRect;
                         */
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-    get: function get(url, vm, attrOptions) {
+    get: function get(url, vm, attrOptions, successMessage) {
         vm.$http.get(url).then(function (response) {
-            if (response.ok == true && response.status == 200) {
+            if (response.ok == true && response.status == 200 && response.body.status == 1) {
                 for (var attr in attrOptions) {
                     vm[attr] = response.body[attrOptions[attr]];
                 }
+                if (successMessage) __WEBPACK_IMPORTED_MODULE_4_element_ui_lib_message___default()({
+                    message: successMessage,
+                    type: 'success'
+                });
             } else {
                 __WEBPACK_IMPORTED_MODULE_4_element_ui_lib_message___default()({
                     message: '获取数据失败',
@@ -46138,12 +46142,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-
+//
 
 
 /*flow*/
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data(arg) {
+    data: function data() {
         return {
             username: '未登录'
         };
@@ -49465,70 +49469,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -49536,29 +49476,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             tableData: [],
             selectRow: null,
-
-            show: 'pending'
+            show: 'orderTable',
+            orderMessage: [{ message: '问题一' }, { message: '回答二' }, { message: '问题二' }, { message: '回答二' }]
         };
     },
     created: function created() {
-        this.refresh();
+        var url = 'order/getOrders.do?type=pending';
+        var attrOptions = {
+            tableData: 'result'
+        };
+        __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].get(url, this, attrOptions);
     },
 
     methods: {
         handleCurrentChange: __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].handleCurrentChange,
         handleSelectAll: __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].handleSelectAll,
-        toggle: function toggle(type) {
-            this.tableData = [];
-            this.selectRow = null;
-            this.show = type;
-            this.refresh();
-        },
-        refresh: function refresh() {
-            var url = 'order/getOrders.do?type=' + this.show;
-            var attrOptions = {
-                tableData: 'result'
-            };
-            __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].get(url, this, attrOptions);
+        view: function view(scope) {
+            /*var url = 'order/viewOrder.do?type='+scope.row.wc_sataus+"&orderid="+scope.row.id;
+            var attrOptions={
+                orderMessage:'result'
+            }
+            util.get(url,this,attrOptions);*/
+            this.show = 'orderMessage';
         }
     }
 });
@@ -49590,6 +49529,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -49599,7 +49540,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 title: '',
                 content: ''
             }
-
         };
     },
     created: function created() {},
@@ -49607,10 +49547,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     methods: {
         onSubmit: function onSubmit() {
             var url = 'order/createOrder.do?title=' + this.form.title + '&content=' + this.form.content;
-            var attrOptions = {
-                tableData: 'result'
-            };
-            __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].get(url, this, attrOptions);
+            __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].get(url, this, {}, '提交工单成功');
+        }
+    },
+    computed: {
+        isDisabled: function isDisabled() {
+            return this.form.title === '' || this.form.content === '';
         }
     }
 });
@@ -68452,49 +68394,9 @@ if (false) {
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "wapper"
-  }, [_c('ul', {
-    staticClass: "select"
-  }, [_c('li', {
-    staticClass: "default",
-    class: {
-      hover: _vm.show == 'pending'
-    }
-  }, [_c('a', {
-    staticClass: "select-item",
-    on: {
-      "click": function($event) {
-        _vm.toggle('pending')
-      }
-    }
-  }, [_vm._v("待处理工单")])]), _vm._v(" "), _c('li', {
-    staticClass: "default",
-    class: {
-      hover: _vm.show == 'processing'
-    }
-  }, [_c('a', {
-    staticClass: "select-item",
-    on: {
-      "click": function($event) {
-        _vm.toggle('processing')
-      }
-    }
-  }, [_vm._v("处理中工单")])]), _vm._v(" "), _c('li', {
-    staticClass: "default",
-    class: {
-      hover: _vm.show == 'processed'
-    }
-  }, [_c('a', {
-    staticClass: "select-item",
-    on: {
-      "click": function($event) {
-        _vm.toggle('processed')
-      }
-    }
-  }, [_vm._v("已处理工单")])])]), _vm._v(" "), _c('div', {
+  }, [_c('div', {
     staticClass: "operStage"
-  }, [(_vm.show == 'pending') ? _c('div', {
-    staticClass: "disk-snapshot"
-  }, [_c('div', {
+  }, [(_vm.show == 'orderTable') ? _c('div', {
     staticClass: "table"
   }, [_c('el-table', {
     staticStyle: {
@@ -68517,120 +68419,56 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
       "prop": "id",
-      "label": "工单号",
+      "label": "工单编号",
+      "width": "120",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "name",
-      "label": "工单标题",
+      "prop": "title",
+      "label": "问题标题",
+      "width": "120",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "created",
-      "label": "创建时间",
+      "prop": "issue",
+      "label": "问题内容",
+      "width": "120"
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "puddate",
+      "label": "提交时间",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "state",
-      "label": "状态",
-      "show-overflow-tooltip": ""
-    }
-  })], 1)], 1)]) : _vm._e(), _vm._v(" "), (_vm.show == 'processing') ? _c('div', {
-    staticClass: "disk-snapshot"
-  }, [_c('div', {
-    staticClass: "table"
-  }, [_c('el-table', {
-    staticStyle: {
-      "width": "100%"
+      "fixed": "right",
+      "label": "操作",
+      "width": "100"
     },
-    attrs: {
-      "data": _vm.tableData,
-      "border": "",
-      "tooltip-effect": "dark"
-    },
-    on: {
-      "select-all": _vm.handleSelectAll,
-      "select": _vm.handleCurrentChange
-    }
-  }, [_c('el-table-column', {
-    attrs: {
-      "type": "selection",
-      "width": "55"
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
-      "prop": "id",
-      "label": "工单号",
-      "show-overflow-tooltip": ""
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
-      "prop": "name",
-      "label": "工单标题",
-      "show-overflow-tooltip": ""
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
-      "prop": "created",
-      "label": "创建时间",
-      "show-overflow-tooltip": ""
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
-      "prop": "state",
-      "label": "状态",
-      "show-overflow-tooltip": ""
-    }
-  })], 1)], 1)]) : _vm._e(), _vm._v(" "), (_vm.show == 'processed') ? _c('div', {
-    staticClass: "disk-snapshot"
-  }, [_c('div', {
-    staticClass: "table"
-  }, [_c('el-table', {
-    staticStyle: {
-      "width": "100%"
-    },
-    attrs: {
-      "data": _vm.tableData,
-      "border": "",
-      "tooltip-effect": "dark"
-    },
-    on: {
-      "select-all": _vm.handleSelectAll,
-      "select": _vm.handleCurrentChange
-    }
-  }, [_c('el-table-column', {
-    attrs: {
-      "type": "selection",
-      "width": "55"
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
-      "prop": "id",
-      "label": "工单号",
-      "show-overflow-tooltip": ""
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
-      "prop": "name",
-      "label": "工单标题",
-      "show-overflow-tooltip": ""
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
-      "prop": "created",
-      "label": "创建时间",
-      "show-overflow-tooltip": ""
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
-      "prop": "state",
-      "label": "状态",
-      "show-overflow-tooltip": ""
-    }
-  })], 1)], 1)]) : _vm._e()])])
+    scopedSlots: _vm._u([{
+      key: "default",
+      fn: function(scope) {
+        return [_c('el-button', {
+          attrs: {
+            "type": "text",
+            "size": "small"
+          },
+          on: {
+            "click": function($event) {
+              _vm.view(scope)
+            }
+          }
+        }, [_vm._v("查看工单")])]
+      }
+    }])
+  })], 1)], 1) : _vm._e(), _vm._v(" "), (_vm.show == 'orderMessage') ? _c('div', {
+    staticClass: "order-display"
+  }, [_c('div', [_vm._v("沟通记录")]), _vm._v(" "), _vm._l((_vm.orderMessage), function(item) {
+    return _c('div', [_vm._v("\n                " + _vm._s(item.message) + "\n            ")])
+  })], 2) : _vm._e()])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -71700,6 +71538,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('div', {
     staticClass: "wapper"
   }, [_c('div', {
+    staticClass: "title"
+  }, [_vm._v("提交工单")]), _vm._v(" "), _c('div', {
     staticClass: "operStage"
   }, [_c('div', {
     staticClass: "form-wrapper"
@@ -71711,9 +71551,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('el-form-item', {
     attrs: {
-      "label": "工单标题"
+      "label": "问题描述"
     }
   }, [_c('el-input', {
+    attrs: {
+      "type": "textarea",
+      "rows": 3
+    },
     model: {
       value: (_vm.form.title),
       callback: function($$v) {
@@ -71723,11 +71567,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })], 1), _vm._v(" "), _c('el-form-item', {
     attrs: {
-      "label": "工单内容"
+      "label": "详细信息"
     }
   }, [_c('el-input', {
     attrs: {
-      "type": "textarea"
+      "type": "textarea",
+      "rows": 6
     },
     model: {
       value: (_vm.form.content),
@@ -71738,7 +71583,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })], 1), _vm._v(" "), _c('el-form-item', [_c('el-button', {
     attrs: {
-      "type": "primary"
+      "type": "primary",
+      "disabled": _vm.isDisabled
     },
     on: {
       "click": _vm.onSubmit
