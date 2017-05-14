@@ -78,6 +78,7 @@
                 window.removeEventListener('mouseup',this.DraggingEnd)
             },
             setPosition(newPosition){
+                console.log(newPosition);
                 if(newPosition>100)
                     newPosition=100;
                 if(newPosition<0)

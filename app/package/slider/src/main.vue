@@ -27,7 +27,7 @@
             points:{
                 type:Array,
                 default:function(){
-                    return [20,50]
+                    return [500,800]
                 }
             },
             unit:{
@@ -40,7 +40,7 @@
             },
             max:{
                 type:Number,
-                default:100
+                default:1523
             },
             step:{
                 type:Number,
