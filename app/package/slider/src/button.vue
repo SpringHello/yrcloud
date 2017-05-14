@@ -1,23 +1,30 @@
 <template>
-    <div
-        class="com-slider-button"
-        :style="styleWrapper"
-        :class="{hover:hovering,dragging:dragging}"
-        @mousedown="handleMouseDown"
-        @mouseenter="handleMouseEnter"
-        @mouseleave="handleMouseLeave">
+    <div>
+
+        <div class="com-slider-active" :style="sliderActive"></div>
+        <div
+                class="com-slider-button"
+                :style="styleWrapper"
+                :class="{hover:hovering,dragging:dragging}"
+                @mousedown="handleMouseDown"
+                @mouseenter="handleMouseEnter"
+                @mouseleave="handleMouseLeave">
+        </div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
-    
+
 
     export default{
         name:'COMSlider',
 
-        props:{
-
-        },
+        props:[
+            'points',
+            'unit',
+            'value',
+            'step'
+        ],
         data(){
             return{
                 hovering:false,
@@ -25,7 +32,7 @@
                 startX:0,
                 currentX:0,
                 startPosition:0,
-                value:0
+                oldValue:this.value
             }
         },
         computed:{
@@ -38,8 +45,11 @@
             styleWrapper(){
                 return {left:this.currentPosition};
             },
+            sliderActive(){
+                return {width:this.currentPosition};
+            },
             currentPosition(){
-                return `${(this.value-this.min)/(this.max-this.min)*100}%`;
+                return `${(this.oldValue-this.min)/(this.max-this.min)*100}%`;
             }
         },
         methods:{
@@ -51,7 +61,6 @@
             },
             handleMouseDown(event){
                 event.preventDefault();
-                console.log(event);
                 this.startX = event.clientX,
                 this.startPosition = parseFloat(this.currentPosition);
                 window.addEventListener('mousemove',this.onDragging);
@@ -59,13 +68,9 @@
             },
             onDragging:function(event){
                 this.currentX = event.clientX;
-                console.log('this.currentX'+this.currentX)
-                console.log('this.startX'+this.startX)
-                console.log('this.$parent.$sliderSize'+this.$parent.$sliderSize)
-
                 let diff = (this.currentX-this.startX)/this.$parent.$sliderSize*100;
                 let newPosition = this.startPosition + diff;
-                console.log(newPosition);
+
                 this.setPosition(newPosition)
             },
             DraggingEnd:function(){
@@ -77,7 +82,12 @@
                     newPosition=100;
                 if(newPosition<0)
                     newPosition=0;
-                this.value = (newPosition/100)*(this.max-this.min);
+                this.oldValue = parseInt((newPosition/100)*(this.max-this.min));
+            },
+        },
+        watch:{
+            oldValue(value){
+                this.$emit('refresh',value);
             }
         }
     }
@@ -86,12 +96,23 @@
 <style scoped>
     .com-slider-button{
         width:16px;
-        height:24px;
+        height:35px;
         background-color: #0095AC;
         cursor:pointer;
         position: absolute;
+        top:50%;
+        transform: translate(0%,-50%);
+        z-index:101
     }
     .hover{
-        background-color: red;
     }
+    .com-slider-active{
+        position:absolute;
+        height:30px;
+        left:0px;
+        top:0px;
+        background-color: #43bfe3;
+
+    }
+
 </style>

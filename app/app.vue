@@ -24,15 +24,16 @@
                 </li>
             </ul>
         </header>
-
-        <y-menu></y-menu>
-        <router-view></router-view>
+        <y-slider ></y-slider>
+        <!--y-menu></y-menu>
+        <router-view></router-view-->
     </div>
 
 </template>
 
 <script>
-    import Ymenu from "./components/menu/menu.vue"
+    import Ymenu from "./components/menu/menu.vue";
+    import slider from './package/slider/src/main.vue';
     /*flow*/
     export default{
         data(){
@@ -63,6 +64,7 @@
         },
         components:{
             'y-menu':Ymenu,
+            'y-slider':slider
         }
     }
 </script>
