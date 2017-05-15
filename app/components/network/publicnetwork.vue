@@ -79,12 +79,12 @@
                             <div class="item">
                                 <label>带宽<i>*</i>：</label>
                                 <div class="item-div" style="width:377px">
-                                    <el-slider
+                                    <my-slider
                                             v-model="brand"
-                                            show-input
-                                            :min="1"
+                                            unit="M"
+                                            :points="[30,50]"
                                             @change="changePay">
-                                    </el-slider>
+                                    </my-slider>
                                     </el-select>
                                 </div>
                             </div>
@@ -187,7 +187,7 @@
 
                 vpcOptions:null,
                 vpc:null,
-                brand:null,
+                brand:50,
                 hostOptions:null,
                 host:null,
 
@@ -218,7 +218,7 @@
             formatCost:dateFormatter.formatCost,
             processTimeChange(){
                 //处理包月/包年转换
-                util.processTimeChange(this.value,this,this,data);
+                util.processTimeChange(this.value,this,data);
                 this.changePay();
             },
             changePay(){

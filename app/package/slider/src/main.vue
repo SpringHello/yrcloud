@@ -1,7 +1,7 @@
 <template>
     <div>
         <div id="pole">
-            <span v-for="(point,index) in processPosition" :style="pointPosition(point)" class="points-style"><label class="points">{{points[index]+unit}}</label></span>
+            <span v-for="(point,index) in processPosition" :style="pointPosition(point)" class="points-style"><label class="points">{{showPoints[index]+unit}}</label></span>
             <slider
                     :value="value"
                     @refresh="refresh"
@@ -9,7 +9,7 @@
             >
             </slider>
         </div>
-        <div>{{oldValue}}</div>
+        <div>{{value}}</div>
     </div>
 
 </template>
@@ -17,7 +17,7 @@
 <script type="text/ecmascript-6">
     import slider from './button.vue';
     export default{
-        name:'COMSlider',
+        name:'my-slider',
 
         props:{
             value:{
@@ -27,7 +27,7 @@
             points:{
                 type:Array,
                 default:function(){
-                    return [500,800]
+                    return []
                 }
             },
             unit:{
@@ -40,7 +40,7 @@
             },
             max:{
                 type:Number,
-                default:1523
+                default:100
             },
             step:{
                 type:Number,
@@ -54,9 +54,8 @@
                     value = value-arr[index-1]
                 return value;
             })
-            console.log(processPosition);
             return{
-                oldValue:this.value,
+                showPoints:this.points,
                 processPosition,
             }
         },
@@ -69,7 +68,8 @@
                 return {width:position};
             },
             refresh(value){
-                this.oldValue = value;
+                this.$emit('input',value);
+                this.$emit('change');
             }
         },
         computed:{

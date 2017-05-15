@@ -4,6 +4,7 @@ import VueResource from 'vue-resource';
 import App from './app.vue';
 import {Button,Menu,Submenu,MenuItem,Table,TableColumn,Tooltip,Dialog,Steps,Step,RadioGroup,
     RadioButton,Select,Option,Slider,Switch,Dropdown,DropdownMenu,DropdownItem,Input,Radio,DatePicker,Pagination,Carousel,carouselItem,Form,FormItem} from 'element-ui';
+import slider from './package/slider/index.js';
 import icon from '../assets/iconfont.css';
 import host from './components/host/host.vue';
 import VPC from './components/network/VPC.vue';
@@ -18,7 +19,7 @@ import feelog from './components/fee/feelog.vue';
 import feeEst from './components/fee/feeEst.vue';
 import rechargelog from './components/rechargeLog/rechargelog.vue';
 import usercenter from './components/user/usercenter.vue';
-//import neworder from './components/workOrder/newOrder.vue';
+import neworder from './components/workOrder/newOrder.vue';
 import myorder from './components/workOrder/myOrder.vue';
 //import Slider from './package/slider/src/index.vue';
 const router = new VueRouter({
@@ -36,7 +37,7 @@ const router = new VueRouter({
         { path: '/feeest', component: feeEst },
         { path: '/rechargelog', component: rechargelog },
         { path: '/usercenter', component: usercenter },
-        //{ path: '/neworder', component: neworder },
+        { path: '/neworder', component: neworder },
         { path: '/myorder', component: myorder },
 
     ]
@@ -70,6 +71,7 @@ Vue.use(Carousel);
 Vue.use(carouselItem);
 Vue.use(Form);
 Vue.use(FormItem);
+Vue.use(slider);
 new Vue({
     render:h => h(App),
     router,

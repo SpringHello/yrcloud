@@ -1,9 +1,6 @@
 <template>
     <div class="wapper">
-        <div class="title" v-if="show=='orderTable'">我的工单</div>
-        <div class="title" v-if="show=='orderMessage'">沟通记录</div>
         <div class="operStage">
-
             <div class="table" v-if="show=='orderTable'">
                 <el-table
                         :data="tableData"
@@ -50,9 +47,19 @@
             </div>
 
             <div class="order-display" v-if="show=='orderMessage'">
-                <div v-for="item in orderMessage" :class="{answer:item.uname!='',question:item.uname==''}">
-                    {{item.message}}
+                <div class="title">工单详情</div><span style="cursor: pointer;line-height: 27px;font-size: 16px;" @click="show = 'orderTable'">&lt;返回列表</span>
+                <div style="">
+                    问题描述:{{title.title}}
                 </div>
+                <div v-for="item in reply" :class="{answer:item.uname!='',question:item.uname==''}">
+                    <p>{{item.g_reply}}</p>
+                    <span class="dateTime">{{item.repdate}}</span>
+                </div>
+                <div style="padding-top:20px;width:80%">
+                    <el-input type="textarea" :rows="3" v-model="newMessage"></el-input>
+                    <el-button type="primary" @click="onSubmit">提交</el-button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -65,12 +72,15 @@
             return {
                 tableData:[],
                 selectRow:null,
-                show:'orderMessage',
-                orderMessage:[{message:'问题一',uname:''},{message:'回答二',uname:'kehuyi'},{message:'问题二',uname:''},{message:'回答二',uname:'kehu2'}]
+                show:'orderTable',
+                title:{},
+                reply:[],
+                newMessage:'',
+                currentOrderid:null
             };
         },
         created(){
-            var url = 'order/getOrders.do?type=pending';
+            var url = 'order/getOrders.do?type=processing';
             var attrOptions={
                 tableData:'result'
             }
@@ -80,12 +90,23 @@
             handleCurrentChange:util.handleCurrentChange,
             handleSelectAll:util.handleSelectAll,
             view(scope){
-                /*var url = 'order/viewOrder.do?type='+scope.row.wc_sataus+"&orderid="+scope.row.id;
+                this.currentOrderid = scope.row.id;
+                var url = 'order/viewOrder.do?orderid='+scope.row.id;
                 var attrOptions={
-                    orderMessage:'result'
+                    title:'title',
+                    reply:'reply'
                 }
-                util.get(url,this,attrOptions);*/
+                util.get(url,this,attrOptions);
+
                 this.show='orderMessage'
+            },
+            onSubmit(){
+                var url = 'order/reply.do';
+                var postLoader = {
+                    orderid:this.currentOrderid,
+                    editorValue:this.newMessage
+                }
+                util.post(url,postLoader,this,{});
             }
         }
     }
@@ -107,12 +128,13 @@
     .answer{
         text-align:left;
         background-color:#eafbff;
-        height: 50px;
         font-size: 20px;
     }
     .question{
         text-align:right;
-        height: 50px;
         font-size: 20px;
+    }
+    .dateTime{
+        font-size: 5px;
     }
 </style>

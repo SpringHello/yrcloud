@@ -13,6 +13,53 @@ ul[data-v-7cfe9f85]{
     height:100%;
 }
 
+#pole[data-v-08b8686c]{
+    width:350px;
+    height:30px;
+    position:relative;
+    font-size:0px;
+}
+.points-style[data-v-08b8686c]{
+    height:30px;
+    text-align:right;
+    font-size:16px;
+    line-height:30px;
+    display:inline-block;
+    border-top:1px solid rgb(221,221,221);
+    border-left:1px solid rgb(221,221,221);
+    border-bottom:1px solid rgb(221,221,221);
+    position:relative;
+}
+span[data-v-08b8686c]:last-of-type{
+    border-right:1px solid rgb(221,221,221);
+}
+.points[data-v-08b8686c]{
+    position:absolute;
+    z-index:100;
+    right:0px;
+}
+
+.com-slider-button[data-v-4b0522fa]{
+    width:16px;
+    height:35px;
+    background-color: #0095AC;
+    cursor:pointer;
+    position: absolute;
+    top:50%;
+    transform: translate(0%,-50%);
+    z-index:101
+}
+.hover[data-v-4b0522fa]{
+}
+.com-slider-active[data-v-4b0522fa]{
+    position:absolute;
+    height:30px;
+    left:0px;
+    top:0px;
+    background-color: #43bfe3;
+}
+
+
 .item i[data-v-27a09525]{
     font-size: 18px;
     width: 7px;
@@ -584,6 +631,24 @@ th[data-v-3967d71a]{
     padding-top:15px;
 }
 .order-display[data-v-1f7bcca6]{
+}
+.title[data-v-1f7bcca6]{
+    font-size:16px;
+    font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti, "Microsoft YaHei";
+    padding:12px 15px;
+    background-color: #cdd0de;
+}
+.answer[data-v-1f7bcca6]{
+    text-align:left;
+    background-color:#eafbff;
+    font-size: 20px;
+}
+.question[data-v-1f7bcca6]{
+    text-align:right;
+    font-size: 20px;
+}
+.dateTime[data-v-1f7bcca6]{
+    font-size: 5px;
 }
 
 /*# sourceMappingURL=main.css.map*/

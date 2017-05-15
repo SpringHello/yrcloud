@@ -70,26 +70,20 @@
                 this.currentX = event.clientX;
                 let diff = (this.currentX-this.startX)/this.$parent.$sliderSize*100;
                 let newPosition = this.startPosition + diff;
-
                 this.setPosition(newPosition)
             },
             DraggingEnd:function(){
                 window.removeEventListener('mousemove',this.onDragging);
-                window.removeEventListener('mouseup',this.DraggingEnd)
+                window.removeEventListener('mouseup',this.DraggingEnd);
+                this.$emit('refresh',this.oldValue);
             },
             setPosition(newPosition){
-                console.log(newPosition);
                 if(newPosition>100)
                     newPosition=100;
                 if(newPosition<0)
                     newPosition=0;
                 this.oldValue = parseInt((newPosition/100)*(this.max-this.min));
             },
-        },
-        watch:{
-            oldValue(value){
-                this.$emit('refresh',value);
-            }
         }
     }
 </script>

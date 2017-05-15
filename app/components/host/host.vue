@@ -7,67 +7,81 @@
                     &nbsp;&nbsp;更多&nbsp;&nbsp;<i class="el-icon-caret-bottom el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item :disabled="selectRow==null||selectRow.state=='Running'" command="startPrompt">启动</el-dropdown-item>
-                    <el-dropdown-item :disabled="selectRow==null||selectRow.state=='Stopped'" command="stopPrompt">停止</el-dropdown-item>
+                    <el-dropdown-item :disabled="selectRow==null||selectRow.computerstate==1" command="startPrompt">启动</el-dropdown-item>
+                    <el-dropdown-item :disabled="selectRow==null||selectRow.computerstate==0" command="stopPrompt">停止</el-dropdown-item>
                     <el-dropdown-item :disabled="selectRow==null" command="backupPrompt">备份</el-dropdown-item>
-                    <el-dropdown-item :disabled="selectRow==null||selectRow.state=='Running'" command="updatePrompt">升级</el-dropdown-item>
+                    <el-dropdown-item :disabled="selectRow==null||selectRow.computerstate==1" command="updatePrompt">升级</el-dropdown-item>
                     <!--el-dropdown-item :disabled="selectRow==null" command="deletePrompt">删除</el-dropdown-item-->
                 </el-dropdown-menu>
             </el-dropdown>
             <div class="table">
-            <el-table
-                    :data="tableData"
-                    border
-                    tooltip-effect="dark"
-                    style="width: 100%"
-                    @select-all="handleSelectAll"
-                    @select="handleCurrentChange">
-                <el-table-column
-                        type="selection"
-                        width="55">
-                </el-table-column>
-                <el-table-column
-                        prop="id"
-                        label="主机编号"
-                        width="120"
-                        show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column
-                        prop="name"
-                        label="主机名"
-                        width="120"
-                        show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column
-                        prop="state"
-                        label="状态"
-                        width="120"
-                        :formatter="format">
-                </el-table-column>
-                <el-table-column
-                        prop="templatename"
-                        label="操作系统"
-                        show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column
-                        prop="serviceofferingname"
-                        label="配置"
-                        show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column
-                        prop="created"
-                        label="创建时间"
-                        show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column
-                        fixed="right"
-                        label="操作"
-                        width="100">
-                    <template scope="scope">
-                        <el-button @click="showInformation(scope.row)" type="text" size="small">查看主机</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
+                <el-table
+                        :data="tableData"
+                        border
+                        tooltip-effect="dark"
+                        style="width: 100%"
+                        @select-all="handleSelectAll"
+                        @select="handleCurrentChange">
+                    <el-table-column
+                            type="selection"
+                            width="55">
+                    </el-table-column>
+                    <el-table-column
+                            prop="computername"
+                            label="主机名"
+                            width="120"
+                            show-overflow-tooltip>
+                    </el-table-column>
+                    <el-table-column
+                            prop="computerstate"
+                            label="状态"
+                            width="120"
+                            :formatter="formatStatus">
+                    </el-table-column>
+                    <el-table-column
+                            prop="templatename"
+                            label="操作系统"
+                            show-overflow-tooltip>
+                    </el-table-column>
+
+
+                    <el-table-column
+                            prop="serviceoffername"
+                            label="配置"
+                            show-overflow-tooltip>
+                    </el-table-column>
+                    <el-table-column
+                            width="120"
+                            prop="caseTpye"
+                            label="购买方式"
+
+                            :formatter="formatType">
+                    </el-table-column>
+                    <el-table-column
+                            prop="cpCase"
+                            label="费用"
+                            width="120"
+                            :formatter="formatCost">
+                    </el-table-column>
+                    <el-table-column
+                            prop="createtime"
+                            label="创建时间"
+                            show-overflow-tooltip>
+                    </el-table-column>
+                    <el-table-column
+                            prop="endtime"
+                            label="到期时间"
+                            :formatter="formatEndtime">
+                    </el-table-column>
+                    <el-table-column
+                            fixed="right"
+                            label="操作"
+                            width="100">
+                        <template scope="scope">
+                            <el-button @click="showInformation(scope.row)" type="text" size="small">查看主机</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </div>
 
             <el-dialog title="创建主机" v-model="dialogVisible" size="small" :modal-append-to-body=false>
@@ -79,6 +93,7 @@
                                 <el-step title="镜像选择"></el-step>
                                 <el-step title="配置选择"></el-step>
                                 <el-step title="网络选择"></el-step>
+                                <el-step title="取名"></el-step>
                             </el-steps>
                         </div>
 
@@ -105,7 +120,7 @@
 
 
                                 <div class="OSClass" v-bind:class="{ active: item==select }" v-for="item in OS[radio]" @click="change(item)">
-                                    {{item.name}}
+                                    {{item.templatename}}
                                 </div>
                             </div>
                         </div>
@@ -143,6 +158,12 @@
                                 <el-slider v-model="bandwidth" show-input @change="calculationPay">
 
                                 </el-slider>
+                            </div>
+                        </div>
+                        <div class="confWapper flex" v-if="active==4">
+                            <div style="width: 50px;text-align: center;font-size: 16px;line-height: 34px;font-weight: 400;">输入虚拟机名字：</div>
+                            <div style="width:70%">
+                                <el-input v-model="networkname" placeholder="请输入内容"></el-input>
                             </div>
                         </div>
                     </div>
@@ -205,8 +226,8 @@
 
                 <span slot="footer" class="dialog-footer">
                     <el-button type="primary" @click="prev" v-if="active>0">上一步</el-button>
-                    <el-button type="primary" v-if="active<3" @click="next">下一步</el-button>
-                    <el-button type="primary" v-if="active>=3" :disabled="isFinish" @click="finish">创建</el-button>
+                    <el-button type="primary" v-if="active<4" @click="next">下一步</el-button>
+                    <el-button type="primary" v-if="active>=4" :disabled="isFinish" @click="finish">创建</el-button>
                 </span>
             </el-dialog>
 
@@ -236,6 +257,7 @@
                 <div style="border-top:2px solid rgb(0, 0, 0);">
                     <div style="padding:5px 15px;margin-top:10px"><label style="width:72px;display:inline-block;text-align:right">用户名：</label><span class="el-dialog__title">{{username}}</span></div>
                     <div style="padding:5px 15px"><label style="width:72px;display:inline-block;text-align:right">密码：</label><span class="el-dialog__title">{{password}}</span></div>
+                    <div style="padding:5px 15px"><label style="width:72px;display:inline-block;text-align:right">私网名称：</label><span class="el-dialog__title">{{privatename}}</span></div>
                     <div style="padding:5px 15px"><label style="width:72px;display:inline-block;text-align:right">私网IP：</label><span class="el-dialog__title">{{privateip}}</span></div>
                     <div style="padding:5px 15px"><label style="width:72px;display:inline-block;text-align:right">公网IP：</label><span class="el-dialog__title">{{publicip}}</span></div>
                 </div>
@@ -297,6 +319,7 @@
                 showInfo:false,
                 username:'',
                 password:'',
+                networkname:'',
                 privateip:'',
                 publicip:'',
                 promptMessage:'',
@@ -338,7 +361,10 @@
         created(){
             this.$http.get('information/listVirtualMachines.do').then(response=>{
                 if(response.ok==true&&response.status==200){
-                    this.tableData = dateFormatter.dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
+                    console.log(response.body.result)
+                    console.log(response.body.message)
+                    console.log(response.body.status)
+                    this.tableData = response.body.result;
                 }
             })
         },
@@ -357,19 +383,19 @@
                     response =>{
 
                         if(response.ok==true&&response.status==200){
-                            let result = response.body.listtemplatesresponse;
-                            for(let z in result.template){
-                                if(result.template[z].name.indexOf("CentOS")>=0){
-                                    this.OS.CentOS.push(result.template[z])
+                            let result = response.body.result;
+                            for(let z in result){
+                                if(result[z].templatename.indexOf("CentOS")>=0){
+                                    this.OS.CentOS.push(result[z])
                                 }
-                                if(result.template[z].name.indexOf("Ubuntu")>=0){
-                                    this.OS.Ubuntu.push(result.template[z])
+                                if(result[z].templatename.indexOf("Ubuntu")>=0){
+                                    this.OS.Ubuntu.push(result[z])
                                 }
-                                if(result.template[z].name.indexOf("Debian")>=0){
-                                    this.OS.Debian.push(result.template[z])
+                                if(result[z].templatename.indexOf("Debian")>=0){
+                                    this.OS.Debian.push(result[z])
                                 }
                             }
-                            this.select = result.template[0];
+                            this.select = result[0];
                             console.log(this.select)
                         }
                     }
@@ -390,9 +416,9 @@
                     response =>{
                         console.log(response);
                         if(response.ok==true&&response.status==200){
-                            this.CPU = response.body;
-                            this.CPUNum = response.body[0].cpuNum;
-                            this.CPUCache = response.body[0].cache[0];
+                            this.CPU = response.body.result;
+                            this.CPUNum = response.body.result[0].cpuNum;
+                            this.CPUCache = response.body.result[0].cache[0];
                         }
                     }
                 )
@@ -484,13 +510,14 @@
                 })
                 let params = "?";
                 params += "zoneid="+this.zone;
-                params += "&templateid="+this.select.id;
+                params += "&templateid="+this.select.templateid;
                 params += "&serviceofferingid="+this.CPUCache.id;
                 params += "&diskofferingid=fcafa58a-573c-4606-b729-c65bf041b004&size="+this.disk;
                 params += "&networkid="+this.network;
                 params += "&value="+this.value;
                 params += "&timevalue="+this.timeValue;
                 params += "&bandwidth="+this.bandwidth;
+                params += "&name="+this.networkname;
                 this.$http.get('information/deployVirtualMachine.do'+params).then(response => {
                     if(response.ok==true&&response.status==200){
                         if(response.body.status==1){
@@ -499,14 +526,13 @@
                                 message:'创建成功',
                                 type:'success'
                             });
-                            this.tableData = dateFormatter.dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
+                            this.tableData = response.body.result;
                         }else if(response.body.status==2){
                             loadingInstance.close();
                             Message({
-                                message:'创建失败',
+                                message:response.body.message,
                                 type:'error'
                             });
-                            this.tableData = dateFormatter.dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
                         }else{
                             loadingInstance.close();
                             Message({
@@ -546,10 +572,11 @@
             handleCommand(type){
                 console.log(type);
                 if(type=='updatePrompt'){
-                    this.$http.get('information/upgrade.do?id='+this.selectRow.id).then(
+                    this.$http.get('information/upgrade.do?id='+this.selectRow.computerid).then(
                         response =>{
                             if(response.ok==true&&response.status==200){
-                                if(response.body.upgrade==1){
+                                console.log(response.body.result);
+                                if(response.body.result==1){
                                     this.upGrade = false;
                                 }else{
                                     this.upGrade = true;
@@ -561,9 +588,9 @@
                         response =>{
                             console.log(response);
                             if(response.ok==true&&response.status==200){
-                                this.CPU = response.body;
-                                this.CPUNum = response.body[0].cpuNum;
-                                this.CPUCache = response.body[0].cache[0];
+                                this.CPU = response.body.result;
+                                this.CPUNum = response.body.result[0].cpuNum;
+                                this.CPUCache = response.body.result[0].cache[0];
                             }
                         }
                     )
@@ -576,7 +603,7 @@
                     text:'实例启动中...'
                 })
                 this.$http.post('information/startVirtualMachine.do',{
-                    virtualMachineid:row.id,
+                    virtualMachineid:row.computerid,
                 }).then(response => {
                     if(response.ok==true&&response.status==200){
                         console.log(response.body);
@@ -586,14 +613,13 @@
                                 message:'启动成功',
                                 type:'success'
                             });
-                            this.tableData = dateFormatter.dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
+                            this.tableData = response.body.result;
                         }else if(response.body.status==2){
                             loadingInstance.close();
                             Message({
-                                message:'启动失败',
+                                message:response.body.message,
                                 type:'error'
                             });
-                            this.tableData = dateFormatter.dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
                         }else{
                             loadingInstance.close();
                             Message({
@@ -623,7 +649,7 @@
                     text:'实例停止中...'
                 })
                 this.$http.post('information/stopVirtualMachine.do',{
-                    virtualMachineid:row.id,
+                    virtualMachineid:row.computerid,
                     forced:true
                 }).then(response => {
                     if(response.ok==true&&response.status==200){
@@ -633,14 +659,13 @@
                                 message:'停止成功',
                                 type:'success'
                             });
-                            this.tableData = dateFormatter.dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
+                            this.tableData = response.body.result;
                         }else if(response.body.status==2){
                             loadingInstance.close();
                             Message({
-                                message:'停止失败',
+                                message:response.body.message,
                                 type:'error'
                             });
-                            this.tableData = dateFormatter.dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
                         }else{
                             loadingInstance.close();
                             Message({
@@ -669,7 +694,7 @@
                 let loadingInstance = Loading.service({
                     text:'实例备份中...'
                 });
-                this.$http.get('Snapshot/createVMSnapshot.do?virtualmachineid='+row.id+'&name='+this.snapshotName+'&description='+this.snapshotDescription).then(response => {
+                this.$http.get('Snapshot/createVMSnapshot.do?virtualmachineid='+row.computerid+'&name='+this.snapshotName+'&description='+this.snapshotDescription).then(response => {
                     loadingInstance.close();
                     if(response.ok==true&&response.status==200){
                         if(response.body.status==1){
@@ -680,7 +705,7 @@
                             console.log(response.body);
                         }else if(response.body.status==2){
                             Message({
-                                message:'备份失败',
+                                message:response.body.message,
                                 type:'error'
                             });
                         }else{
@@ -726,7 +751,7 @@
                         }else if(response.body.status==2){
                             loadingInstance.close();
                             Message({
-                                message:'删除失败',
+                                message:response.body.message,
                                 type:'error'
                             });
                             this.tableData = dateFormatter.dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
@@ -759,7 +784,7 @@
                 })
                 this.updatePrompt = false;
                 console.log(row);
-                this.$http.get('information/scaleVirtualMachine.do?virtualMachineid='+row.id+'&serviceofferingid='+this.CPUCache.id).then(response => {
+                this.$http.get('information/scaleVirtualMachine.do?virtualMachineid='+row.computerid+'&serviceofferingid='+this.CPUCache.id).then(response => {
                     loadingInstance.close();
                     if(response.ok==true&&response.status==200){
                         if(response.body.status==1){
@@ -767,10 +792,10 @@
                                 message:'升级成功',
                                 type:'success'
                             })
-                            this.tableData = dateFormatter.dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
+                            this.tableData = response.body.result;
                         }else{
                             Message({
-                                message:'升级失败',
+                                message:response.body.message,
                                 type:'error'
                             })
                         }
@@ -783,15 +808,19 @@
                     })
                 })
             },
-            format(row){
-                return row.state=='Running'?'正在运行':'已停止';
+            formatStatus(row){
+                return row.computerstate==1?'正在运行':'已停止';
             },
+            formatType:dateFormatter.format,
+            formatCost:dateFormatter.formatCost,
+            formatEndtime:dateFormatter.formatEndtime,
             showInformation(row){
-                this.$http.get('information/showInfo.do?vmid='+row.id).then(
+                this.$http.get('information/showInfo.do?vmid='+row.computerid).then(
                     response => {
                         if(response.ok==true&&response.status==200){
                             this.username = response.body.username;
                             this.password = response.body.password;
+                            this.privatename = response.body.privatename;
                             this.privateip = response.body.privateip;
                             this.publicip = response.body.publicip;
                             this.showInfo = true;
