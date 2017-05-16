@@ -6619,8 +6619,8 @@ module.exports = BoundingRect;
         }
     },
 
-    /*calculationPay(vue){
-        let params = {};
+    /*calrculationPay(vue){
+     let paams = {};
         params.cpunum = vue.CPUNum;
         params.memory = vue.CPUCache.cache;
         params.disk = vue.disk;
@@ -46419,6 +46419,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /*flow*/
 
@@ -46444,14 +46452,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             silder: false,
 
             /*
-            *   以下参数为配合API而设置的固定不变参数
-            */
+             *   以下参数为配合API而设置的固定不变参数
+             */
             bandwidth: 0,
             CPUNum: 0,
             CPUCache: { cache: 0 },
 
             /*
-                是否显示操作确认框
+             是否显示操作确认框
              */
             mountPrompt: false,
             unmountPrompt: false,
@@ -46468,7 +46476,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.$http.get('Disk/listDisk.do').then(function (response) {
             if (response.ok == true && response.status == 200) {
                 //console.log(response.body);
-                _this.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvolumesresponse.volume);
+                _this.tableData = response.body.result;
             }
         }, function (response) {});
     },
@@ -46490,10 +46498,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         deleteDisk: function deleteDisk() {
             var _this2 = this;
 
-            this.$http.get('Disk/deleteVolume.do?diskid=' + this.currentRow.id).then(function (response) {
+            this.$http.get('Disk/deleteVolume.do?diskid=' + this.currentRow.diskid).then(function (response) {
                 if (response.ok == true && response.status == 200) {
                     //console.log(response.body);
-                    _this2.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvolumesresponse.volume);
+                    _this2.tableData = response.body.result;
                 }
             }, function (response) {});
         },
@@ -46503,7 +46511,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (type == 'mountPrompt') {
                 this.$http.get('information/listVirtualMachines.do').then(function (response) {
                     if (response.ok == true && response.status == 200) {
-                        _this3.mountOptions = response.body.listvirtualmachinesresponse.virtualmachine;
+                        _this3.mountOptions = response.body.result;
                     }
                 });
             }
@@ -46516,7 +46524,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var loadingInstance = __WEBPACK_IMPORTED_MODULE_4_element_ui_lib_loading___default.a.service({
                 text: '磁盘挂载中...'
             });
-            this.$http.get('Disk/attachVolume.do?virtualmachineid=' + this.mountVMid + '&diskid=' + this.currentRow.id).then(function (response) {
+            this.$http.get('Disk/attachVolume.do?virtualmachineid=' + this.mountVMid + '&diskid=' + this.currentRow.diskid).then(function (response) {
                 if (response.ok == true && response.status == 200) {
                     console.log(response.body);
                     if (response.body.status == 1) {
@@ -46525,14 +46533,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             message: '挂载成功',
                             type: 'success'
                         });
-                        _this4.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvolumesresponse.volume);
+                        _this4.tableData = response.body.result;
                     } else if (response.body.status == 2) {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '挂载失败',
+                            message: response.body.message,
                             type: 'error'
                         });
-                        _this4.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvolumesresponse.volume);
                     } else {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
@@ -46556,6 +46563,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 });
             });
         },
+        calculationPayTo: function calculationPayTo(dis) {
+            console.log(dis);
+            this.disk = dis;
+            this.calculationPay();
+        },
+        calculationPay: function calculationPay() {
+            var url = 'device/QueryBillingPrice.do';
+            var params = {};
+            params.cpunum = this.CPUNum;
+            params.memory = this.CPUCache.cache;
+            params.disk = this.disk;
+            params.value = this.value;
+            params.timevalue = this.timeValue;
+            params.bandwidth = this.bandwidth;
+            var attrOptions = {
+                money: 'cost'
+            };
+            __WEBPACK_IMPORTED_MODULE_6__util_util_js__["a" /* default */].post(url, params, this, attrOptions);
+        },
         handleUnmount: function handleUnmount() {
             var _this5 = this;
 
@@ -46563,7 +46589,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var loadingInstance = __WEBPACK_IMPORTED_MODULE_4_element_ui_lib_loading___default.a.service({
                 text: '磁盘解挂中...'
             });
-            this.$http.get('Disk/detachVolume.do?diskid=' + this.currentRow.id + '&virtualmachineid=' + this.currentRow.mounton).then(function (response) {
+            this.$http.get('Disk/detachVolume.do?diskid=' + this.currentRow.diskid + '&virtualmachineid=' + this.currentRow.mounton).then(function (response) {
                 if (response.ok == true && response.status == 200) {
                     console.log(response.body);
                     if (response.body.status == 1) {
@@ -46572,14 +46598,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             message: '解挂成功',
                             type: 'success'
                         });
-                        _this5.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvolumesresponse.volume);
+                        _this5.tableData = response.body.result;
                     } else if (response.body.status == 2) {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '解挂失败',
+                            message: response.body.message,
                             type: 'error'
                         });
-                        _this5.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvolumesresponse.volume);
                     } else {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
@@ -46608,7 +46633,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var loadingInstance = __WEBPACK_IMPORTED_MODULE_4_element_ui_lib_loading___default.a.service({
                 text: '磁盘备份中...'
             });
-            this.$http.get('Snapshot/createSnapshot.do?volumeid=' + this.currentRow.id).then(function (response) {
+            this.$http.get('Snapshot/createSnapshot.do?volumeid=' + this.currentRow.diskid).then(function (response) {
                 if (response.ok == true && response.status == 200) {
                     //console.log(response.body);
                     loadingInstance.close();
@@ -46619,7 +46644,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         });
                     } else if (response.body.status == 2) {
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '磁盘备份失败',
+                            message: response.body.message,
                             type: 'error'
                         });
                     } else {
@@ -46644,6 +46669,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 });
             });
         },
+
+        formatType: __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].format,
+        formatCost: __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].formatCost,
+        formatEndtime: __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].formatEndtime,
+        format: function format(row) {
+            return row.mountonname == undefined ? '不可备份' : '可备份';
+        },
         handleDelete: function handleDelete() {
             var _this6 = this;
 
@@ -46660,18 +46692,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             message: '删除成功',
                             type: 'success'
                         });
-                        if (response.body.listvolumesresponse.hasOwnProperty("volume")) {
-                            _this6.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvolumesresponse.volume);
-                        } else {
-                            _this6.tableData = [];
-                        }
+                        _this6.tableData = response.body.result;
                     } else if (response.body.status == 2) {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '删除失败',
+                            message: response.body.message,
                             type: 'error'
                         });
-                        _this6.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvolumesresponse.volume);
                     } else {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
@@ -46707,7 +46734,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
             this.$http.get('Disk/listDiskTemplate.do').then(function (response) {
                 if (response.ok == true && response.status == 200) {
-                    _this7.diskOptions = response.body;
+                    if (response.body.status == 1) {
+                        _this7.diskOptions = response.body.result;
+                    }
                     //this.disk = response.body[0].size;
                 }
             });
@@ -46738,10 +46767,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             message: '创建成功',
                             type: 'success'
                         });
-                        _this8.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvolumesresponse.volume);
+                        _this8.tableData = response.body.result;
                     } else {
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '创建失败',
+                            message: response.body.message,
                             type: 'error'
                         });
                     }
@@ -46758,9 +46787,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     type: 'error'
                 });
             });
-        },
-        format: function format(row) {
-            return row.state == 'Ready' ? '可备份' : '不可备份';
         }
     }
 });
@@ -47384,6 +47410,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -47402,6 +47450,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             showInfo: false,
             username: '',
             password: '',
+            networkname: '',
             privateip: '',
             publicip: '',
             promptMessage: '',
@@ -47445,7 +47494,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         this.$http.get('information/listVirtualMachines.do').then(function (response) {
             if (response.ok == true && response.status == 200) {
-                _this.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
+                console.log(response.body.result);
+                console.log(response.body.message);
+                console.log(response.body.status);
+                _this.tableData = response.body.result;
             }
         });
     },
@@ -47466,19 +47518,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$http.get('information/listTemplates.do').then(function (response) {
 
                 if (response.ok == true && response.status == 200) {
-                    var result = response.body.listtemplatesresponse;
-                    for (var z in result.template) {
-                        if (result.template[z].name.indexOf("CentOS") >= 0) {
-                            _this2.OS.CentOS.push(result.template[z]);
+                    var result = response.body.result;
+                    for (var z in result) {
+                        if (result[z].templatename.indexOf("CentOS") >= 0) {
+                            _this2.OS.CentOS.push(result[z]);
                         }
-                        if (result.template[z].name.indexOf("Ubuntu") >= 0) {
-                            _this2.OS.Ubuntu.push(result.template[z]);
+                        if (result[z].templatename.indexOf("Ubuntu") >= 0) {
+                            _this2.OS.Ubuntu.push(result[z]);
                         }
-                        if (result.template[z].name.indexOf("Debian") >= 0) {
-                            _this2.OS.Debian.push(result.template[z]);
+                        if (result[z].templatename.indexOf("Debian") >= 0) {
+                            _this2.OS.Debian.push(result[z]);
                         }
                     }
-                    _this2.select = result.template[0];
+                    _this2.select = result[0];
                     console.log(_this2.select);
                 }
             });
@@ -47495,9 +47547,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$http.get('information/listServiceOfferings.do').then(function (response) {
                 console.log(response);
                 if (response.ok == true && response.status == 200) {
-                    _this2.CPU = response.body;
-                    _this2.CPUNum = response.body[0].cpuNum;
-                    _this2.CPUCache = response.body[0].cache[0];
+                    _this2.CPU = response.body.result;
+                    _this2.CPUNum = response.body.result[0].cpuNum;
+                    _this2.CPUCache = response.body.result[0].cache[0];
                 }
             });
 
@@ -47589,13 +47641,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
             var params = "?";
             params += "zoneid=" + this.zone;
-            params += "&templateid=" + this.select.id;
+            params += "&templateid=" + this.select.templateid;
             params += "&serviceofferingid=" + this.CPUCache.id;
             params += "&diskofferingid=fcafa58a-573c-4606-b729-c65bf041b004&size=" + this.disk;
             params += "&networkid=" + this.network;
             params += "&value=" + this.value;
             params += "&timevalue=" + this.timeValue;
             params += "&bandwidth=" + this.bandwidth;
+            params += "&name=" + this.networkname;
             this.$http.get('information/deployVirtualMachine.do' + params).then(function (response) {
                 if (response.ok == true && response.status == 200) {
                     if (response.body.status == 1) {
@@ -47604,14 +47657,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             message: '创建成功',
                             type: 'success'
                         });
-                        _this3.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
+                        _this3.tableData = response.body.result;
                     } else if (response.body.status == 2) {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '创建失败',
+                            message: response.body.message,
                             type: 'error'
                         });
-                        _this3.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
                     } else {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
@@ -47653,9 +47705,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             console.log(type);
             if (type == 'updatePrompt') {
-                this.$http.get('information/upgrade.do?id=' + this.selectRow.id).then(function (response) {
+                this.$http.get('information/upgrade.do?id=' + this.selectRow.computerid).then(function (response) {
                     if (response.ok == true && response.status == 200) {
-                        if (response.body.upgrade == 1) {
+                        console.log(response.body.result);
+                        if (response.body.result == 1) {
                             _this4.upGrade = false;
                         } else {
                             _this4.upGrade = true;
@@ -47665,9 +47718,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.$http.get('information/listServiceOfferings.do').then(function (response) {
                     console.log(response);
                     if (response.ok == true && response.status == 200) {
-                        _this4.CPU = response.body;
-                        _this4.CPUNum = response.body[0].cpuNum;
-                        _this4.CPUCache = response.body[0].cache[0];
+                        _this4.CPU = response.body.result;
+                        _this4.CPUNum = response.body.result[0].cpuNum;
+                        _this4.CPUCache = response.body.result[0].cache[0];
                     }
                 });
             }
@@ -47681,7 +47734,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 text: '实例启动中...'
             });
             this.$http.post('information/startVirtualMachine.do', {
-                virtualMachineid: row.id
+                virtualMachineid: row.computerid
             }).then(function (response) {
                 if (response.ok == true && response.status == 200) {
                     console.log(response.body);
@@ -47691,14 +47744,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             message: '启动成功',
                             type: 'success'
                         });
-                        _this5.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
+                        _this5.tableData = response.body.result;
                     } else if (response.body.status == 2) {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '启动失败',
+                            message: response.body.message,
                             type: 'error'
                         });
-                        _this5.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
                     } else {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
@@ -47730,7 +47782,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 text: '实例停止中...'
             });
             this.$http.post('information/stopVirtualMachine.do', {
-                virtualMachineid: row.id,
+                virtualMachineid: row.computerid,
                 forced: true
             }).then(function (response) {
                 if (response.ok == true && response.status == 200) {
@@ -47740,14 +47792,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             message: '停止成功',
                             type: 'success'
                         });
-                        _this6.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
+                        _this6.tableData = response.body.result;
                     } else if (response.body.status == 2) {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '停止失败',
+                            message: response.body.message,
                             type: 'error'
                         });
-                        _this6.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
                     } else {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
@@ -47776,7 +47827,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var loadingInstance = __WEBPACK_IMPORTED_MODULE_4_element_ui_lib_loading___default.a.service({
                 text: '实例备份中...'
             });
-            this.$http.get('Snapshot/createVMSnapshot.do?virtualmachineid=' + row.id + '&name=' + this.snapshotName + '&description=' + this.snapshotDescription).then(function (response) {
+            this.$http.get('Snapshot/createVMSnapshot.do?virtualmachineid=' + row.computerid + '&name=' + this.snapshotName + '&description=' + this.snapshotDescription).then(function (response) {
                 loadingInstance.close();
                 if (response.ok == true && response.status == 200) {
                     if (response.body.status == 1) {
@@ -47787,7 +47838,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         console.log(response.body);
                     } else if (response.body.status == 2) {
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '备份失败',
+                            message: response.body.message,
                             type: 'error'
                         });
                     } else {
@@ -47835,7 +47886,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     } else if (response.body.status == 2) {
                         loadingInstance.close();
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '删除失败',
+                            message: response.body.message,
                             type: 'error'
                         });
                         _this7.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
@@ -47870,7 +47921,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
             this.updatePrompt = false;
             console.log(row);
-            this.$http.get('information/scaleVirtualMachine.do?virtualMachineid=' + row.id + '&serviceofferingid=' + this.CPUCache.id).then(function (response) {
+            this.$http.get('information/scaleVirtualMachine.do?virtualMachineid=' + row.computerid + '&serviceofferingid=' + this.CPUCache.id).then(function (response) {
                 loadingInstance.close();
                 if (response.ok == true && response.status == 200) {
                     if (response.body.status == 1) {
@@ -47878,10 +47929,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             message: '升级成功',
                             type: 'success'
                         });
-                        _this8.tableData = __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listvirtualmachinesresponse.virtualmachine);
+                        _this8.tableData = response.body.result;
                     } else {
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '升级失败',
+                            message: response.body.message,
                             type: 'error'
                         });
                     }
@@ -47894,16 +47945,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 });
             });
         },
-        format: function format(row) {
-            return row.state == 'Running' ? '正在运行' : '已停止';
+        formatStatus: function formatStatus(row) {
+            return row.computerstate == 1 ? '正在运行' : '已停止';
         },
+
+        formatType: __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].format,
+        formatCost: __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].formatCost,
+        formatEndtime: __WEBPACK_IMPORTED_MODULE_7__util_dateFormatter_js__["a" /* default */].formatEndtime,
         showInformation: function showInformation(row) {
             var _this9 = this;
 
-            this.$http.get('information/showInfo.do?vmid=' + row.id).then(function (response) {
+            this.$http.get('information/showInfo.do?vmid=' + row.computerid).then(function (response) {
                 if (response.ok == true && response.status == 200) {
                     _this9.username = response.body.username;
                     _this9.password = response.body.password;
+                    _this9.privatename = response.body.privatename;
                     _this9.privateip = response.body.privateip;
                     _this9.publicip = response.body.publicip;
                     _this9.showInfo = true;
@@ -49158,11 +49214,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             tableData: [],
+            diskData: [],
             currentRow: null,
             deletePrompt: false,
             revertPrompt: false,
@@ -49216,7 +49274,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.$http.get('Snapshot/listSnapshots.do').then(function (response) {
                     if (response.ok == true && response.status == 200) {
                         //console.log(response.body);
-                        _this2.tableData = response.body.listsnapshotsresponse.snapshot;
+                        _this2.diskData = response.body.listsnapshotsresponse.snapshot;
                     }
                 }, function (response) {});
             }
@@ -49353,7 +49411,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         format: function format(row) {
-            return row.isbestnew == '0' ? '已过时' : '最新备份';
+            return 'hello';
+            //return row.isbestnew=='0'?'已过时':'最新备份';
+        },
+        diskFormat: function diskFormat(row) {
+            return 'nihao';
         }
     }
 });
@@ -49491,6 +49553,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -49502,7 +49587,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             title: {},
             reply: [],
             newMessage: '',
-            currentOrderid: null
+            currentOrderid: null,
+            buttonMsg: '提交',
+            disabled: false
         };
     },
     created: function created() {
@@ -49514,8 +49601,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
-        handleCurrentChange: __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].handleCurrentChange,
-        handleSelectAll: __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].handleSelectAll,
         view: function view(scope) {
             this.currentOrderid = scope.row.id;
             var url = 'order/viewOrder.do?orderid=' + scope.row.id;
@@ -49524,16 +49609,51 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 reply: 'reply'
             };
             __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].get(url, this, attrOptions);
-
-            this.show = 'orderMessage';
+            this.show = scope.row.wc_sataus == '2' ? 'processing' : 'processed';
         },
         onSubmit: function onSubmit() {
-            var url = 'order/reply.do';
-            var postLoader = {
-                orderid: this.currentOrderid,
-                editorValue: this.newMessage
-            };
-            __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].post(url, postLoader, this, {});
+            var _this = this;
+
+            this.disabled = true;
+            count(this);
+            var url = 'order/reply.do?orderid=' + this.currentOrderid + "&editorValue=" + this.newMessage;
+            this.$http.get(url).then(function (response) {
+                if (response.ok == true && response.status == 200 && response.body.status == 1) {
+                    _this.reply.push(response.body.msg);
+                    document.getElementById("dialog").scrollIntoView(true);
+                } else {
+                    Message({
+                        message: '提交失败',
+                        type: 'error'
+                    });
+                }
+            }, function (response) {
+                Message({
+                    message: '服务器错误',
+                    type: 'error'
+                });
+            });
+            function count(vm) {
+                var sec = 5;
+                vm.buttonMsg = sec + 's';
+                var IntervalId = window.setInterval(f, 1000);
+                function f() {
+                    sec--;
+                    vm.buttonMsg = sec + 's';
+                    if (sec == 0) {
+                        vm.buttonMsg = '提交';
+                        vm.disabled = false;
+                        window.clearInterval(IntervalId);
+                    }
+                }
+            }
+        },
+        closeOrder: function closeOrder() {
+            var url = 'order/closeOrder.do?orderid=' + this.currentOrderid;
+            __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].get(url, this, {});
+        },
+        format: function format(row) {
+            return row.wc_sataus == '1' ? '未处理' : row.wc_sataus == '2' ? '处理中' : '处理完成';
         }
     }
 });
@@ -68744,41 +68864,37 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "data": _vm.tableData,
       "border": "",
       "tooltip-effect": "dark"
-    },
-    on: {
-      "select-all": _vm.handleSelectAll,
-      "select": _vm.handleCurrentChange
     }
   }, [_c('el-table-column', {
     attrs: {
-      "type": "selection",
-      "width": "55"
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
       "prop": "id",
       "label": "工单编号",
-      "width": "120",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
       "prop": "title",
       "label": "问题标题",
-      "width": "120",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
       "prop": "issue",
       "label": "问题内容",
-      "width": "120"
+      "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
       "prop": "puddate",
       "label": "提交时间",
       "show-overflow-tooltip": ""
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "wc_sataus",
+      "label": "状态",
+      "show-overflow-tooltip": "",
+      "formatter": _vm.format
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
@@ -68789,7 +68905,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     scopedSlots: _vm._u([{
       key: "default",
       fn: function(scope) {
-        return [_c('el-button', {
+        return [(scope.row.wc_sataus != '1') ? _c('el-button', {
           attrs: {
             "type": "text",
             "size": "small"
@@ -68799,41 +68915,60 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
               _vm.view(scope)
             }
           }
-        }, [_vm._v("查看工单")])]
+        }, [_vm._v("查看工单")]) : _vm._e()]
       }
     }])
-  })], 1)], 1) : _vm._e(), _vm._v(" "), (_vm.show == 'orderMessage') ? _c('div', {
+  })], 1)], 1) : _vm._e(), _vm._v(" "), (_vm.show != 'orderTable') ? _c('div', {
     staticClass: "order-display"
   }, [_c('div', {
     staticClass: "title"
-  }, [_vm._v("工单详情")]), _c('span', {
+  }, [_c('div', [_c('span', [_vm._v("问题标题:")]), _vm._v(_vm._s(_vm.title.title))]), _vm._v(" "), _c('div', {
     staticStyle: {
-      "cursor": "pointer",
-      "line-height": "27px",
-      "font-size": "16px"
-    },
-    on: {
-      "click": function($event) {
-        _vm.show = 'orderTable'
-      }
+      "margin-right": "50px"
     }
-  }, [_vm._v("<返回列表")]), _vm._v(" "), _c('div', {}, [_vm._v("\n                问题描述:" + _vm._s(_vm.title.title) + "\n            ")]), _vm._v(" "), _vm._l((_vm.reply), function(item) {
+  }, [_c('span', [_vm._v("工单编号:")]), _vm._v(_vm._s(_vm.currentOrderid) + "\n                ")]), _vm._v(" "), _c('div', [_c('span', [_vm._v("提交时间:")]), _vm._v(_vm._s(_vm.title.puddate) + "\n                ")])]), _vm._v(" "), _vm._m(0), _vm._v(" "), _c('div', {
+    staticClass: "dialog-wrapper"
+  }, [_vm._l((_vm.reply), function(item, index) {
     return _c('div', {
+      staticClass: "reply",
       class: {
-        answer: item.uname != '', question: item.uname == ''
+        lightBlue: index % 2 == 0
       }
-    }, [_c('p', [_vm._v(_vm._s(item.g_reply))]), _vm._v(" "), _c('span', {
-      staticClass: "dateTime"
+    }, [_c('span', {
+      staticStyle: {
+        "line-height": "29px"
+      }
+    }, [_vm._v(_vm._s(item.uname) + ": ")]), _c('span', {
+      domProps: {
+        "innerHTML": _vm._s(item.g_reply)
+      }
+    }), _vm._v(" "), _c('span', {
+      staticStyle: {
+        "display": "block"
+      }
     }, [_vm._v(_vm._s(item.repdate))])])
   }), _vm._v(" "), _c('div', {
+    attrs: {
+      "id": "dialog"
+    }
+  })], 2), _vm._v(" "), (_vm.show == 'processing') ? _c('div', {
+    staticClass: "title",
     staticStyle: {
-      "padding-top": "20px",
-      "width": "80%"
+      "margin-top": "15px",
+      "border": "1px solid #ccc",
+      "border-bottom": "none"
+    }
+  }, [_c('span', [_vm._v("我要反馈")])]) : _vm._e(), _vm._v(" "), (_vm.show == 'processing') ? _c('div', {
+    staticClass: "reply-wrapper"
+  }, [_c('div', {
+    staticStyle: {
+      "margin-bottom": "15px"
     }
   }, [_c('el-input', {
     attrs: {
       "type": "textarea",
-      "rows": 3
+      "rows": 3,
+      "placeholder": "请输入留言内容"
     },
     model: {
       value: (_vm.newMessage),
@@ -68842,15 +68977,28 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "newMessage"
     }
-  }), _vm._v(" "), _c('el-button', {
+  })], 1), _vm._v(" "), _c('el-button', {
     attrs: {
-      "type": "primary"
+      "disabled": _vm.newMessage == '' || _vm.disabled
     },
     on: {
       "click": _vm.onSubmit
     }
-  }, [_vm._v("提交")])], 1)], 2) : _vm._e()])])
-},staticRenderFns: []}
+  }, [_vm._v(_vm._s(_vm.buttonMsg))]), _vm._v(" "), _c('el-button', {
+    on: {
+      "click": _vm.closeOrder
+    }
+  }, [_vm._v("问题已解决!关闭工单")])], 1) : _vm._e()]) : _vm._e()])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "title",
+    staticStyle: {
+      "margin-top": "15px",
+      "border": "1px solid #ccc",
+      "border-bottom": "none"
+    }
+  }, [_c('span', [_vm._v("沟通记录")])])
+}]}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
@@ -69683,12 +69831,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     slot: "dropdown"
   }, [_c('el-dropdown-item', {
     attrs: {
-      "disabled": _vm.selectRow == null || _vm.selectRow.state == 'Running',
+      "disabled": _vm.selectRow == null || _vm.selectRow.computerstate == 1,
       "command": "startPrompt"
     }
   }, [_vm._v("启动")]), _vm._v(" "), _c('el-dropdown-item', {
     attrs: {
-      "disabled": _vm.selectRow == null || _vm.selectRow.state == 'Stopped',
+      "disabled": _vm.selectRow == null || _vm.selectRow.computerstate == 0,
       "command": "stopPrompt"
     }
   }, [_vm._v("停止")]), _vm._v(" "), _c('el-dropdown-item', {
@@ -69698,7 +69846,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("备份")]), _vm._v(" "), _c('el-dropdown-item', {
     attrs: {
-      "disabled": _vm.selectRow == null || _vm.selectRow.state == 'Running',
+      "disabled": _vm.selectRow == null || _vm.selectRow.computerstate == 1,
       "command": "updatePrompt"
     }
   }, [_vm._v("升级")])], 1)], 1), _vm._v(" "), _c('div', {
@@ -69723,24 +69871,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "id",
-      "label": "主机编号",
-      "width": "120",
-      "show-overflow-tooltip": ""
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
-      "prop": "name",
+      "prop": "computername",
       "label": "主机名",
       "width": "120",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "state",
+      "prop": "computerstate",
       "label": "状态",
       "width": "120",
-      "formatter": _vm.format
+      "formatter": _vm.formatStatus
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
@@ -69750,15 +69891,35 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "serviceofferingname",
+      "prop": "serviceoffername",
       "label": "配置",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "created",
+      "width": "120",
+      "prop": "caseTpye",
+      "label": "购买方式",
+      "formatter": _vm.formatType
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "cpCase",
+      "label": "费用",
+      "width": "120",
+      "formatter": _vm.formatCost
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "createtime",
       "label": "创建时间",
       "show-overflow-tooltip": ""
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "endtime",
+      "label": "到期时间",
+      "formatter": _vm.formatEndtime
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
@@ -69825,6 +69986,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }), _vm._v(" "), _c('el-step', {
     attrs: {
       "title": "网络选择"
+    }
+  }), _vm._v(" "), _c('el-step', {
+    attrs: {
+      "title": "取名"
     }
   })], 1)], 1), _vm._v(" "), (_vm.active == 0) ? _c('div', {
     staticClass: "confWapper"
@@ -69899,7 +70064,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.change(item)
         }
       }
-    }, [_vm._v("\n                                " + _vm._s(item.name) + "\n                            ")])
+    }, [_vm._v("\n                                " + _vm._s(item.templatename) + "\n                            ")])
   })], 2)]) : _vm._e(), _vm._v(" "), _c('div', [(_vm.active == 2) ? _c('div', {
     staticClass: "confWapper flex"
   }, [_c('div', {
@@ -70034,6 +70199,31 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "bandwidth"
     }
+  })], 1)]) : _vm._e(), _vm._v(" "), (_vm.active == 4) ? _c('div', {
+    staticClass: "confWapper flex"
+  }, [_c('div', {
+    staticStyle: {
+      "width": "50px",
+      "text-align": "center",
+      "font-size": "16px",
+      "line-height": "34px",
+      "font-weight": "400"
+    }
+  }, [_vm._v("输入虚拟机名字：")]), _vm._v(" "), _c('div', {
+    staticStyle: {
+      "width": "70%"
+    }
+  }, [_c('el-input', {
+    attrs: {
+      "placeholder": "请输入内容"
+    },
+    model: {
+      value: (_vm.networkname),
+      callback: function($$v) {
+        _vm.networkname = $$v
+      },
+      expression: "networkname"
+    }
   })], 1)]) : _vm._e()], 2), _vm._v(" "), _c('div', {
     staticClass: "display"
   }, [_c('div', [_c('label', [_vm._v("CPU : ")]), _c('span', [_vm._v(_vm._s(_vm.CPUNum) + "核")])]), _vm._v(" "), _c('div', [_c('label', [_vm._v("内存 : ")]), _c('span', [_vm._v(_vm._s(_vm.CPUCache.cache) + "G")])]), _vm._v(" "), _c('div', [_c('label', [_vm._v("硬盘 : ")]), _c('span', [_vm._v(_vm._s(_vm.disk) + "G")])]), _vm._v(" "), _c('div', [_c('label', [_vm._v("网络 : ")]), _c('span', [_vm._v(_vm._s(_vm.networkName))])]), _vm._v(" "), _c('div', [_c('label', [_vm._v("带宽 : ")]), _c('span', [_vm._v(_vm._s(_vm.bandwidth))])]), _vm._v(" "), (_vm.value == 'current') ? _c('div', [_c('p', [_vm._v("按需付费，根据资源的实际使用量收费，精确到秒。先使用后付费。")])]) : _vm._e(), _vm._v(" "), (_vm.value == 'month') ? _c('div', [_c('p', [_vm._v("计费单位为月，平均每小时价格低于按量。适用于不间断业务场景。")])]) : _vm._e(), _vm._v(" "), (_vm.value == 'year') ? _c('div', [_c('p', [_vm._v("计费单位为年，平均每小时价格低于实时计费。适用于不间断业务场景。")])]) : _vm._e(), _vm._v(" "), _c('div', [_c('label', [_vm._v("计费方式 : ")]), _vm._v(" "), _c('el-select', {
@@ -70093,14 +70283,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.prev
     }
-  }, [_vm._v("上一步")]) : _vm._e(), _vm._v(" "), (_vm.active < 3) ? _c('el-button', {
+  }, [_vm._v("上一步")]) : _vm._e(), _vm._v(" "), (_vm.active < 4) ? _c('el-button', {
     attrs: {
       "type": "primary"
     },
     on: {
       "click": _vm.next
     }
-  }, [_vm._v("下一步")]) : _vm._e(), _vm._v(" "), (_vm.active >= 3) ? _c('el-button', {
+  }, [_vm._v("下一步")]) : _vm._e(), _vm._v(" "), (_vm.active >= 4) ? _c('el-button', {
     attrs: {
       "type": "primary",
       "disabled": _vm.isFinish
@@ -70244,6 +70434,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("密码：")]), _c('span', {
     staticClass: "el-dialog__title"
   }, [_vm._v(_vm._s(_vm.password))])]), _vm._v(" "), _c('div', {
+    staticStyle: {
+      "padding": "5px 15px"
+    }
+  }, [_c('label', {
+    staticStyle: {
+      "width": "72px",
+      "display": "inline-block",
+      "text-align": "right"
+    }
+  }, [_vm._v("私网名称：")]), _c('span', {
+    staticClass: "el-dialog__title"
+  }, [_vm._v(_vm._s(_vm.privatename))])]), _vm._v(" "), _c('div', {
     staticStyle: {
       "padding": "5px 15px"
     }
@@ -70814,7 +71016,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("解挂")]), _vm._v(" "), _c('el-dropdown-item', {
     attrs: {
-      "disabled": _vm.currentRow == null || _vm.currentRow.state == 'Allocated',
+      "disabled": _vm.currentRow == null || _vm.currentRow.mountonname == undefined,
       "command": "backupPrompt"
     }
   }, [_vm._v("备份")]), _vm._v(" "), _c('el-dropdown-item', {
@@ -70844,42 +71046,46 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "id",
-      "label": "磁盘编号",
-      "width": "120",
-      "show-overflow-tooltip": ""
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
-      "prop": "name",
+      "prop": "diskname",
       "label": "磁盘名",
       "width": "120",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "size",
+      "prop": "disksize",
       "label": "磁盘大小(G)",
       "show-overflow-tooltip": "",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "type",
-      "label": "磁盘类型",
-      "show-overflow-tooltip": "",
-      "show-overflow-tooltip": ""
+      "prop": "caseType",
+      "label": "购买方式",
+      "formatter": _vm.formatType
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "created",
+      "prop": "cpCase",
+      "label": "费用",
+      "formatter": _vm.formatCost
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "createtime",
       "label": "创建时间",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "mounton",
-      "label": "挂载主机id",
+      "prop": "endtime",
+      "label": "到期时间",
+      "formatter": _vm.formatEndtime
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "mountonname",
+      "label": "挂载主机",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
@@ -70977,7 +71183,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "placeholder": "请选择"
     },
     on: {
-      "change": _vm.changePay
+      "change": _vm.calculationPayTo
     },
     model: {
       value: (_vm.disk),
@@ -71000,12 +71206,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "width": "60%",
       "padding-left": "13px"
     }
-  }, [(_vm.silder == true) ? _c('el-slider', {
+  }, [_c('my-slider', {
     attrs: {
-      "show-input": ""
+      "unit": "G",
+      "points": [30, 50]
     },
     on: {
-      "change": _vm.changePay
+      "change": _vm.calculationPay
     },
     model: {
       value: (_vm.disk),
@@ -71014,7 +71221,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "disk"
     }
-  }) : _vm._e()], 1)])]), _vm._v(" "), _c('div', {
+  })], 1)])]), _vm._v(" "), _c('div', {
     staticClass: "display"
   }, [(_vm.value == 'current') ? _c('div', [_c('p', [_vm._v("按需付费，根据资源的实际使用量收费，精确到秒。先使用后付费。")])]) : _vm._e(), _vm._v(" "), (_vm.value == 'month') ? _c('div', [_c('p', [_vm._v("计费单位为月，平均每小时价格低于按量。适用于不间断业务场景。")])]) : _vm._e(), _vm._v(" "), (_vm.value == 'year') ? _c('div', [_c('p', [_vm._v("计费单位为年，平均每小时价格低于实时计费。适用于不间断业务场景。")])]) : _vm._e(), _vm._v(" "), _c('div', [_c('label', [_vm._v("计费方式 : ")]), _vm._v(" "), _c('el-select', {
     staticClass: "eselect",
@@ -71113,8 +71320,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, _vm._l((_vm.mountOptions), function(item) {
     return _c('el-option', {
       attrs: {
-        "label": item.name,
-        "value": item.id
+        "label": item.computername,
+        "value": item.computerid
       }
     })
   }))], 1)]), _vm._v(" "), _c('span', {
@@ -71737,7 +71944,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "prop": "status",
       "label": "是否最新",
-      "formatter": _vm.format,
+      "formatter": _vm.diskFormat,
       "show-overflow-tooltip": ""
     }
   })], 1)], 1)], 1) : _vm._e(), _vm._v(" "), (_vm.show == 'disk') ? _c('div', {
@@ -71769,7 +71976,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "width": "100%"
     },
     attrs: {
-      "data": _vm.tableData,
+      "data": _vm.diskData,
       "border": "",
       "tooltip-effect": "dark"
     },
@@ -71804,6 +72011,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "prop": "state",
       "label": "状态",
+      "formatter": _vm.diskFormat,
       "show-overflow-tooltip": ""
     }
   })], 1)], 1)], 1) : _vm._e(), _vm._v(" "), _c('el-dialog', {

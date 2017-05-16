@@ -39,7 +39,7 @@
                         <el-table-column
                                 prop="status"
                                 label="是否最新"
-                                :formatter="format"
+                                :formatter="diskFormat"
                                 show-overflow-tooltip>
                         </el-table-column>
                     </el-table>
@@ -51,7 +51,7 @@
                 <el-button type="primary" :disabled="this.currentRow==null" @click="deletePrompt = true">删除备份</el-button>
                 <div class="table">
                     <el-table
-                            :data="tableData"
+                            :data="diskData"
                             border
                             tooltip-effect="dark"
                             style="width: 100%"
@@ -79,6 +79,7 @@
                         <el-table-column
                                 prop="state"
                                 label="状态"
+                                :formatter="diskFormat"
                                 show-overflow-tooltip>
                         </el-table-column>
                     </el-table>
@@ -126,6 +127,7 @@
         data(){
             return {
                 tableData:[],
+                diskData:[],
                 currentRow:null,
                 deletePrompt:false,
                 revertPrompt:false,
@@ -178,7 +180,7 @@
                     this.$http.get('Snapshot/listSnapshots.do').then(response => {
                         if(response.ok==true&&response.status==200){
                             //console.log(response.body);
-                            this.tableData = response.body.listsnapshotsresponse.snapshot;
+                            this.diskData = response.body.listsnapshotsresponse.snapshot;
                         }
                     },response => {
 
@@ -314,7 +316,11 @@
                 })
             },
             format(row){
-                return row.isbestnew=='0'?'已过时':'最新备份';
+                return 'hello';
+                //return row.isbestnew=='0'?'已过时':'最新备份';
+            },
+            diskFormat(row){
+                return 'nihao'
             }
         }
     }

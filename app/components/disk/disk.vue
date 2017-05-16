@@ -9,7 +9,7 @@
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item :disabled="currentRow==null||currentRow.mounton!=''" command="mountPrompt">挂载</el-dropdown-item>
                     <el-dropdown-item :disabled="currentRow==null||currentRow.mounton==''" command="unmountPrompt">解挂</el-dropdown-item>
-                    <el-dropdown-item :disabled="currentRow==null||currentRow.state=='Allocated'" command="backupPrompt">备份</el-dropdown-item>
+                    <el-dropdown-item :disabled="currentRow==null||currentRow.mountonname==undefined" command="backupPrompt">备份</el-dropdown-item>
                     <el-dropdown-item :disabled="currentRow==null||currentRow.mounton!=''" command="deletePrompt">删除</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
@@ -25,38 +25,42 @@
                             type="selection"
                             width="55">
                     </el-table-column>
+
                     <el-table-column
-                            prop="id"
-                            label="磁盘编号"
-                            width="120"
-                            show-overflow-tooltip>
-                    </el-table-column>
-                    <el-table-column
-                            prop="name"
+                            prop="diskname"
                             label="磁盘名"
                             width="120"
                             show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column
-                            prop="size"
+                            prop="disksize"
                             label="磁盘大小(G)"
                             show-overflow-tooltip
                             show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column
-                            prop="type"
-                            label="磁盘类型"
-                            show-overflow-tooltip
-                            show-overflow-tooltip>
+                            prop="caseType"
+                            label="购买方式"
+                            :formatter="formatType">
                     </el-table-column>
                     <el-table-column
-                            prop="created"
+                            prop="cpCase"
+                            label="费用"
+                            :formatter="formatCost">
+                    </el-table-column>
+                    <el-table-column
+                            prop="createtime"
                             label="创建时间"
                             show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column
-                            prop="mounton"
-                            label="挂载主机id"
+                            prop="endtime"
+                            label="到期时间"
+                            :formatter="formatEndtime">
+                    </el-table-column>
+                    <el-table-column
+                            prop="mountonname"
+                            label="挂载主机"
                             show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column
@@ -90,7 +94,7 @@
 
                         <div class="confWapper">
                             <div style="width: 80px;text-align: center;font-size: 16px;line-height: 34px;font-weight: 400;">磁盘方案</div>
-                            <el-select v-model="disk" placeholder="请选择" @change="changePay">
+                            <el-select v-model="disk" placeholder="请选择" @change="calculationPayTo">
                                 <el-option
                                         v-for="item in diskOptions"
                                         :label="item.descs"
@@ -101,8 +105,12 @@
 
                         <div class="confWapper">
                             <div style="width:60%;padding-left:13px">
-                                <el-slider v-model="disk" show-input @change="changePay" v-if="silder==true">
-                                </el-slider>
+                                <my-slider
+                                        v-model="disk"
+                                        unit="G"
+                                        :points="[30,50]"
+                                        @change="calculationPay">
+                                </my-slider>
                             </div>
                         </div>
                     </div>
@@ -161,8 +169,8 @@
                         <el-select v-model="mountVMid" placeholder="请选择">
                             <el-option
                                     v-for="item in mountOptions"
-                                    :label="item.name"
-                                    :value="item.id">
+                                    :label="item.computername"
+                                    :value="item.computerid">
                             </el-option>
                         </el-select>
                     </div>
@@ -223,14 +231,14 @@
                 silder:false,
 
                 /*
-                *   以下参数为配合API而设置的固定不变参数
-                */
+                 *   以下参数为配合API而设置的固定不变参数
+                 */
                 bandwidth:0,
                 CPUNum:0,
                 CPUCache:{cache:0},
 
                 /*
-                    是否显示操作确认框
+                 是否显示操作确认框
                  */
                 mountPrompt:false,
                 unmountPrompt:false,
@@ -245,7 +253,7 @@
             this.$http.get('Disk/listDisk.do').then(response => {
                 if(response.ok==true&&response.status==200){
                     //console.log(response.body);
-                    this.tableData = dateFormatter.dateFormat(response.body.listvolumesresponse.volume);
+                    this.tableData = response.body.result;
                 }
             },response => {
 
@@ -266,10 +274,10 @@
                 this.currentRow = null;
             },
             deleteDisk(){
-                this.$http.get('Disk/deleteVolume.do?diskid='+this.currentRow.id).then(response => {
+                this.$http.get('Disk/deleteVolume.do?diskid='+this.currentRow.diskid).then(response => {
                     if(response.ok==true&&response.status==200){
                         //console.log(response.body);
-                        this.tableData = dateFormatter.dateFormat(response.body.listvolumesresponse.volume);
+                        this.tableData = response.body.result;
                     }
                 },response => {
 
@@ -279,7 +287,7 @@
                 if(type=='mountPrompt'){
                     this.$http.get('information/listVirtualMachines.do').then(response=>{
                         if(response.ok==true&&response.status==200){
-                            this.mountOptions = response.body.listvirtualmachinesresponse.virtualmachine;
+                            this.mountOptions = response.body.result;
                         }
                     })
                 }
@@ -290,7 +298,7 @@
                 let loadingInstance = Loading.service({
                     text:'磁盘挂载中...'
                 })
-                this.$http.get('Disk/attachVolume.do?virtualmachineid='+this.mountVMid+'&diskid='+this.currentRow.id).then(response => {
+                this.$http.get('Disk/attachVolume.do?virtualmachineid='+this.mountVMid+'&diskid='+this.currentRow.diskid).then(response => {
                     if(response.ok==true&&response.status==200){
                         console.log(response.body);
                         if(response.body.status==1){
@@ -299,14 +307,13 @@
                                 message:'挂载成功',
                                 type:'success'
                             });
-                            this.tableData = dateFormatter.dateFormat(response.body.listvolumesresponse.volume);
+                            this.tableData = response.body.result;
                         }else if(response.body.status==2){
                             loadingInstance.close();
                             Message({
-                                message:'挂载失败',
+                                message: response.body.message,
                                 type:'error'
                             });
-                            this.tableData = dateFormatter.dateFormat(response.body.listvolumesresponse.volume);
                         }else{
                             loadingInstance.close();
                             Message({
@@ -330,12 +337,32 @@
                     })
                 })
             },
+            calculationPayTo(dis){
+                console.log(dis)
+                this.disk = dis;
+                this.calculationPay();
+            },
+
+            calculationPay(){
+                var url = 'device/QueryBillingPrice.do';
+                let params = {};
+                params.cpunum = this.CPUNum;
+                params.memory = this.CPUCache.cache;
+                params.disk = this.disk;
+                params.value = this.value;
+                params.timevalue = this.timeValue;
+                params.bandwidth = this.bandwidth;
+                var attrOptions = {
+                    money:'cost'
+                }
+                util.post(url,params,this,attrOptions)
+            },
             handleUnmount(){
                 this.unmountPrompt = false;
                 let loadingInstance = Loading.service({
                     text:'磁盘解挂中...'
                 })
-                this.$http.get('Disk/detachVolume.do?diskid='+this.currentRow.id+'&virtualmachineid='+this.currentRow.mounton).then(response => {
+                this.$http.get('Disk/detachVolume.do?diskid='+this.currentRow.diskid+'&virtualmachineid='+this.currentRow.mounton).then(response => {
                     if(response.ok==true&&response.status==200){
                         console.log(response.body);
                         if(response.body.status==1){
@@ -344,14 +371,14 @@
                                 message:'解挂成功',
                                 type:'success'
                             });
-                            this.tableData = dateFormatter.dateFormat(response.body.listvolumesresponse.volume);
+                            this.tableData = response.body.result;
                         }else if(response.body.status==2){
                             loadingInstance.close();
                             Message({
-                                message:'解挂失败',
+                                message:response.body.message,
                                 type:'error'
                             });
-                            this.tableData = dateFormatter.dateFormat(response.body.listvolumesresponse.volume);
+
                         }else{
                             loadingInstance.close();
                             Message({
@@ -380,7 +407,7 @@
                 let loadingInstance = Loading.service({
                     text:'磁盘备份中...'
                 })
-                this.$http.get('Snapshot/createSnapshot.do?volumeid='+this.currentRow.id).then(response => {
+                this.$http.get('Snapshot/createSnapshot.do?volumeid='+this.currentRow.diskid).then(response => {
                     if(response.ok==true&&response.status==200){
                         //console.log(response.body);
                         loadingInstance.close();
@@ -391,7 +418,7 @@
                             });
                         }else if(response.body.status==2){
                             Message({
-                                message:'磁盘备份失败',
+                                message:response.body.message,
                                 type:'error'
                             });
 
@@ -417,6 +444,12 @@
                     })
                 })
             },
+            formatType:dateFormatter.format,
+            formatCost:dateFormatter.formatCost,
+            formatEndtime:dateFormatter.formatEndtime,
+            format(row){
+                return row.mountonname==undefined?'不可备份':'可备份';
+            },
             handleDelete(){
                 this.deletePrompt = false;
                 let loadingInstance = Loading.service({
@@ -431,20 +464,13 @@
                                 message:'删除成功',
                                 type:'success'
                             });
-                            if(response.body.listvolumesresponse.hasOwnProperty("volume")){
-                                this.tableData = dateFormatter.dateFormat(response.body.listvolumesresponse.volume);
-                            }else{
-                                this.tableData = [];
-                            }
-
-
+                            this.tableData = response.body.result;
                         }else if(response.body.status==2){
                             loadingInstance.close();
                             Message({
-                                message:'删除失败',
+                                message:response.body.message,
                                 type:'error'
                             });
-                            this.tableData = dateFormatter.dateFormat(response.body.listvolumesresponse.volume);
                         }else{
                             loadingInstance.close();
                             Message({
@@ -481,7 +507,9 @@
                 this.$http.get('Disk/listDiskTemplate.do').then(
                     response =>{
                         if(response.ok==true&&response.status==200){
-                            this.diskOptions = response.body;
+                            if(response.body.status==1){
+                                this.diskOptions = response.body.result;
+                            }
                             //this.disk = response.body[0].size;
                         }
                     }
@@ -513,10 +541,10 @@
                                     message:'创建成功',
                                     type:'success'
                                 });
-                                this.tableData = dateFormatter.dateFormat(response.body.listvolumesresponse.volume);
+                                this.tableData = response.body.result;
                             }else{
                                 Message({
-                                    message:'创建失败',
+                                    message: response.body.message,
                                     type:'error'
                                 });
                             }
@@ -537,9 +565,7 @@
                     }
                 )
             },
-            format(row){
-                return row.state=='Ready'?'可备份':'不可备份';
-            }
+
         }
     }
 </script>

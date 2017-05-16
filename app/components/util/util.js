@@ -105,8 +105,8 @@ export default{
             vm.timeValue = '1';
         }
     },
-    /*calculationPay(vue){
-        let params = {};
+    /*calrculationPay(vue){
+     let paams = {};
         params.cpunum = vue.CPUNum;
         params.memory = vue.CPUCache.cache;
         params.disk = vue.disk;
