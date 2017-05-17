@@ -24,6 +24,7 @@
                 </li>
             </ul>
         </header>
+        <my-alert></my-alert>
         <y-menu></y-menu>
         <router-view></router-view>
     </div>
@@ -36,7 +37,8 @@
     export default{
         data(){
             return {
-                username:'未登录'
+                username:'未登录',
+                visible:true
             };
         },
         created(){

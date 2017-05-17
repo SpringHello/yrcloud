@@ -75,7 +75,7 @@
             DraggingEnd:function(){
                 window.removeEventListener('mousemove',this.onDragging);
                 window.removeEventListener('mouseup',this.DraggingEnd);
-                this.$emit('refresh',this.oldValue);
+                this.$emit('refresh');
             },
             setPosition(newPosition){
                 if(newPosition>100)
@@ -83,7 +83,13 @@
                 if(newPosition<0)
                     newPosition=0;
                 this.oldValue = parseInt((newPosition/100)*(this.max-this.min));
+                this.$emit('setValue',this.oldValue);
             },
+        },
+        watch:{
+            value(){
+                this.oldValue = this.value;
+            }
         }
     }
 </script>

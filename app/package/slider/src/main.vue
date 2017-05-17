@@ -5,11 +5,11 @@
             <slider
                     :value="value"
                     @refresh="refresh"
+                    @setValue="setValue"
                     :step="step"
             >
             </slider>
         </div>
-        <div>{{value}}</div>
     </div>
 
 </template>
@@ -67,9 +67,11 @@
                 let position = (point-this.min)/(this.max-this.min)*100+'%'
                 return {width:position};
             },
-            refresh(value){
-                this.$emit('input',value);
+            refresh(){
                 this.$emit('change');
+            },
+            setValue(value){
+                this.$emit('input',value);
             }
         },
         computed:{

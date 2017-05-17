@@ -668,10 +668,10 @@ th[data-v-3967d71a]{
     color:#999;
 }
 .reply[data-v-1f7bcca6]{
-    padding: 6px 26px;
+    padding: 20px 26px;
     font-size: 14px;
     color: #999;
-    border:1px dashed #ccc;
+    border-bottom:1px dashed #ccc;
 }
 .dialog-wrapper[data-v-1f7bcca6]{
     height: 450px;
@@ -687,5 +687,24 @@ th[data-v-3967d71a]{
 .lightBlue[data-v-1f7bcca6]{
     background-color: #eafbff;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*# sourceMappingURL=main.css.map*/

@@ -338,7 +338,6 @@
                 })
             },
             calculationPayTo(dis){
-                console.log(dis)
                 this.disk = dis;
                 this.calculationPay();
             },

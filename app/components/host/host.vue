@@ -321,6 +321,7 @@
                 password:'',
                 networkname:'',
                 privateip:'',
+                privatename:'',
                 publicip:'',
                 promptMessage:'',
                 active:0,

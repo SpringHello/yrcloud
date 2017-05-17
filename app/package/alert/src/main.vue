@@ -1,82 +1,85 @@
 <template>
-    <translation>
-        <div class="el-alert" :class="[typeClass]">
-            <i clas="el-alert-icon" :class="[iconClass,isBigIcon]" v-if="showIcon"></i>
-            <div>
+    <div class="my-alert-wrapper">
+        <div :class="type" class="my-alert">
+            <div class="header">
                 <span>{{title}}</span>
-                <desc-content></desc-content>
-                <i @click="close"></i>
+                <i clas="el-alert-close-icon" v-if="CloseIcon" @click="close">X</i>
+            </div>
+            <div class="body">
+                <span>{{description}}</span>
+            </div>
+            <div class="footer">
+                <button>确定</button>
             </div>
         </div>
-    </translation>
+    </div>
+
 </template>
 
 <script type="text/babel">
 
-    const iconClassMap = {
-        success:'el-icon-circle-check',
-        warning:'el-icon-warning',
-        error:'el-alert-circle-cross'
-    }
-
     export default{
-        name: 'el-alert',
+        name: 'my-alert',
         data(){
-            return {
-                visible:true,
-            }
+
         },
         props:{
+            value:{
+                type:Boolean,
+                default:true
+            },
+            CloseIcon:{
+                type:Boolean,
+                default:true
+            },
             title:{
                 type:String,
-                default:'',
+                default:'提示',
                 require:true
             },
             type:{
                 type:String,
                 default:'info',
             },
-            description:String,
-            renderContent:Function
+            description:{
+                type:String,
+                default:'请添加描述...'
+            }
+        },
+        create(){
+            var model = document.createElement("div")
         },
         methods:{
             close(){
-                this.visible = false;
+                this.$emit('input',false);
                 this.$emit('close');
             }
         },
         computed:{
-            typeClass(){
-                return "el-alert-"+this.type;
-            },
-            iconClass(){
-                return iconClassMap[this.type]||'el-alert-info'
-            },
-            isBigIcon(){
-                return this.description?'isBig':''
-            }
-        },
-        components:{
-            descContent:{
-                render(h){
-                    const parent = this.$parent;
-                    if(parent.renderContent){
-                        parent.renderContent(h);
-                    }else if(parent.description){
-                        return <p class="el-alert-description">{parent.description}</p>
-                    }else{
-                        return '';
-                    }
-                }
-            }
+
         }
     }
 </script>
 
-<style>
-    .el-alert{
-        padding:5px;
-        width:100%;
 
+<style>
+    .my-alert-wrapper{
+        position:fixed;
+        top:0px;
+        left:0px;
+        right:0px;
+        bottom:0px;
+        z-index:100;
+    }
+    .my-alert{
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform: translate(-50%,-50%);
+        opacity: 1;
+    }
+    .info{
+        width:250px;
+        height:150px;
     }
 </style>

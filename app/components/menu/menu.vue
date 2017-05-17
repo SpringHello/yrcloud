@@ -14,6 +14,7 @@
                 <el-menu-item index="subnetwork">子网</el-menu-item>
                 <el-menu-item index="publicnetwork">公网IP</el-menu-item>
             </el-submenu>
+            <el-menu-item index="balance">负载均衡</el-menu-item>
             <el-submenu index="5">
                 <template slot="title">充值管理</template>
                 <el-menu-item index="recharge">账户充值</el-menu-item>

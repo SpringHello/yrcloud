@@ -59,6 +59,7 @@
                 </div>
                 <div class="dialog-wrapper">
                     <div v-for="(item,index) in reply" class="reply" :class="{lightBlue:index%2==0}">
+                        <img style="width:40px;height:40px" src="../../../assets/img/avatar.png"/>
                         <span style="line-height: 29px">{{item.uname}}:&nbsp;</span><span v-html="item.g_reply"></span>
                         <span style="display: block">{{item.repdate}}</span>
                     </div>
@@ -213,10 +214,10 @@
         color:#999;
     }
     .reply{
-        padding: 6px 26px;
+        padding: 20px 26px;
         font-size: 14px;
         color: #999;
-        border:1px dashed #ccc;
+        border-bottom:1px dashed #ccc;
     }
     .dialog-wrapper{
         height: 450px;

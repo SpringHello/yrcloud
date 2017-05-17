@@ -6,10 +6,11 @@ const path = require('path');
 module.exports = {
     entry: {
         app: "./app/entry",
-        vendors: ['vue']
+        vendors: ['vue','vue-router','vue-resource','element-ui']
     },
     output: {
         path: path.resolve(__dirname, "dist"),
+        publicPath:'/assets/img',
         filename: "bundle.js"
     },
     module: {
@@ -34,7 +35,6 @@ module.exports = {
                  fallback: "style-loader",
                  use: "css-loader"
                  }),*/
-
                 loader: "url-loader"
             },
             {
@@ -62,6 +62,5 @@ module.exports = {
         }),
         new webpack.optimize.CommonsChunkPlugin({name:'vendors',filename:'vendors.js'}),
         //new webpack.optimize.UglifyJsPlugin()
-
     ],
 }

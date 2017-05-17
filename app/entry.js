@@ -5,6 +5,7 @@ import App from './app.vue';
 import {Button,Menu,Submenu,MenuItem,Table,TableColumn,Tooltip,Dialog,Steps,Step,RadioGroup,
     RadioButton,Select,Option,Slider,Switch,Dropdown,DropdownMenu,DropdownItem,Input,Radio,DatePicker,Pagination,Carousel,carouselItem,Form,FormItem} from 'element-ui';
 import slider from './package/slider/index.js';
+import alert from './package/alert/index.js';
 import icon from '../assets/iconfont.css';
 import host from './components/host/host.vue';
 import VPC from './components/network/VPC.vue';
@@ -21,6 +22,7 @@ import rechargelog from './components/rechargeLog/rechargelog.vue';
 import usercenter from './components/user/usercenter.vue';
 import neworder from './components/workOrder/newOrder.vue';
 import myorder from './components/workOrder/myOrder.vue';
+import balance from './components/balance/balance.vue';
 //import Slider from './package/slider/src/index.vue';
 const router = new VueRouter({
     routes: [
@@ -39,6 +41,7 @@ const router = new VueRouter({
         { path: '/usercenter', component: usercenter },
         { path: '/neworder', component: neworder },
         { path: '/myorder', component: myorder },
+        { path: '/balance', component: balance },
 
     ]
 })
@@ -72,6 +75,7 @@ Vue.use(carouselItem);
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(slider);
+Vue.use(alert);
 new Vue({
     render:h => h(App),
     router,
