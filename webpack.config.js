@@ -21,6 +21,7 @@ module.exports = {
                 // options for the loader
                 options: {compact: false}
             },
+
             {
                 test: /\.css$/,
                 /*use:extracttextwebpackplugin.extract({
@@ -42,7 +43,8 @@ module.exports = {
                 loader: "vue-loader",
                 options:{
                     loaders: {
-                        css: extracttextwebpackplugin.extract({fallback:'style-loader',use:'css-loader'})
+                        css: extracttextwebpackplugin.extract({fallback:'style-loader',use:'css-loader'}),
+                        less:extracttextwebpackplugin.extract('css-loader!less-loader')
                     }
                 }
             },

@@ -44,7 +44,7 @@
                     <el-table-column
                             fixed="right"
                             label="操作"
-                            width="100">
+                            width="150">
                         <template scope="scope">
                             <el-button @click="viewRule(scope.row)" type="text" size="small">查看规则</el-button>
                             <el-button @click="viewHost(scope.row)" type="text" size="small">查看主机</el-button>
@@ -60,35 +60,24 @@
                         :data="hostData"
                         border
                         tooltip-effect="dark"
-                        style="width: 100%"
-                        @select-all="handleSelectAll"
-                        @select="handleCurrentChange">
+                        style="width: 100%">
                     <el-table-column
-                            type="selection"
-                            width="55">
-                    </el-table-column>
-                    <el-table-column
-                            prop="name"
+                            prop="computername"
                             label="名称"
                             show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column
-                            prop="publicport"
-                            label="公共端口">
+                            prop="belongnetworkname"
+                            label="所属子网">
                     </el-table-column>
                     <el-table-column
-                            prop="privateport"
-                            label="私有端口"
+                            prop="createtime"
+                            label="创建时间"
                             show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column
-                            prop="belongpublicip"
-                            label="所属IP"
-                            show-overflow-tooltip>
-                    </el-table-column>
-                    <el-table-column
-                            prop="netwrokname"
-                            label="所属网络"
+                            prop="endtime"
+                            label="到期时间"
                             show-overflow-tooltip>
                     </el-table-column>
                 </el-table>
@@ -153,6 +142,51 @@
             </span>
         </el-dialog>
 
+        <el-dialog title="绑定主机" v-model="bindVM" size="tiny" :modal-append-to-body=false>
+            <div style="display:flex;border-top:2px solid #000">
+                <div class="config">
+                    <div class="confWapper">
+                        <div class="label">选择主机</div>
+                        <el-select v-model="vm" placeholder="请选择">
+                            <el-option
+                                    v-for="item in vmOptions"
+                                    :label="item.computername"
+                                    :value="item.computerid"
+                                    :key="item.computerid">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+            </div>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" :disabled="vmIsDisable" @click="finishBind">绑定</el-button>
+            </span>
+        </el-dialog>
+
+        <el-dialog title="解绑主机" v-model="unbindVM" size="tiny" :modal-append-to-body=false>
+            <div style="display:flex;border-top:2px solid #000">
+                <div class="config">
+                    <div class="confWapper">
+                        <div class="label">选择主机</div>
+                        <el-select v-model="vm" placeholder="请选择">
+                            <el-option
+                                    v-for="item in vmOptions"
+                                    :label="item.computername"
+                                    :value="item.computerid"
+                                    :key="item.computerid">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+            </div>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" :disabled="vmIsDisable" @click="finishUnbind">解绑</el-button>
+            </span>
+        </el-dialog>
+
+
     </div>
 </template>
 
@@ -162,6 +196,8 @@
         data(){
             return {
                 dialogVisible:false,
+                bindVM:false,
+                unbindVM:false,
                 showType:'balance',
                 tableData:[],
                 hostData:[],
@@ -174,6 +210,9 @@
                 publicIp:'',
                 networkIdOptions:[],
                 networkId:'',
+
+                vmOptions:[],
+                vm:'',
                 selectRow:null
             }
         },
@@ -208,6 +247,19 @@
                 url += '&networkid='+this.networkId;
                 util.get(url,this,{tableData:'result'},'创建负载均衡规则成功!');
             },
+            finishBind(){
+                this.bindVM = false;
+                var url = 'loadbalance/assignToLoadBalancerRule.do?roleId='+this.selectRow.loadbalanceroleid;
+                url += '&vmids='+this.vm;
+                util.get(url,this,{},'绑定成功');
+                this.bindVM = false;
+            },
+            finishUnbind(){
+                this.unbindVM = false;
+                var url = 'loadbalance/removeFromLoadBalancerRule.do?roleId='+this.selectRow.loadbalanceroleid;
+                url += '&vmids='+this.vm;
+                util.get(url,this,{},'解绑成功');
+            },
             switchPublicIp(publicIpId){
                 this.networkId = '';
                 for(var i in this.publicIpOptions){
@@ -223,15 +275,26 @@
                 util.get(url,this,{tableData:'result'},'删除成功');
             },
             addHostToBalance(){
-
+                this.bindVM = true;
+                this.vm = '';
+                this.vmOptions = [];
+                var url = 'loadbalance/listVMByNetworkId.do?networkid='+this.selectRow.netwrokid;
+                util.get(url,this,{vmOptions:'result'})
             },
             deleteHostFromBalance(){
-
+                this.unbindVM = true;
+                this.vm = ''
+                this.vmOptions = [];
+                var url = 'loadbalance/listVmByRoleId.do?roleid='+this.selectRow.loadbalanceroleid;
+                util.get(url,this,{vmOptions:'result'})
             }
         },
         computed:{
             isDisable(){
                 return !(this.ruleName&&this.privatePort&&this.publicPort&&this.rule&&this.publicIp&&this.networkId)
+            },
+            vmIsDisable(){
+                return !this.vm
             }
         }
     }

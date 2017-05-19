@@ -23,6 +23,7 @@ import usercenter from './components/user/usercenter.vue';
 import neworder from './components/workOrder/newOrder.vue';
 import myorder from './components/workOrder/myOrder.vue';
 import balance from './components/balance/balance.vue';
+import less from './components/less/less.vue';
 //import Slider from './package/slider/src/index.vue';
 const router = new VueRouter({
     routes: [
@@ -42,6 +43,7 @@ const router = new VueRouter({
         { path: '/neworder', component: neworder },
         { path: '/myorder', component: myorder },
         { path: '/balance', component: balance },
+        { path: '/less', component: less },
 
     ]
 })
