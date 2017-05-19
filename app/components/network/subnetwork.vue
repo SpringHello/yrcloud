@@ -66,7 +66,8 @@
                                         <el-option
                                                 v-for="zone in zoneOptions"
                                                 :label="zone.name"
-                                                :value="zone.id">
+                                                :value="zone.id"
+                                                :key="zone.id">
                                         </el-option>
                                     </el-select>
                                 </div>
@@ -78,7 +79,8 @@
                                         <el-option
                                                 v-for="vpc in vpcOptions"
                                                 :label="vpc.vpcname"
-                                                :value="vpc.vpcid">
+                                                :value="vpc.vpcid"
+                                                :key="vpc.vpcid">
                                         </el-option>
                                     </el-select>
                                 </div>

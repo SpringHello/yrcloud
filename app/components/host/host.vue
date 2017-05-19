@@ -103,7 +103,8 @@
                                 <el-option
                                         v-for="item in zoneOptions"
                                         :label="item.name"
-                                        :value="item.id">
+                                        :value="item.id"
+                                        :key="item.id">
                                 </el-option>
                             </el-select>
                         </div>
@@ -119,7 +120,7 @@
                                 </el-radio-group>
 
 
-                                <div class="OSClass" v-bind:class="{ active: item==select }" v-for="item in OS[radio]" @click="change(item)">
+                                <div class="OSClass" v-bind:class="{ active: item==select }" v-for="item in OS[radio]" @click="change(item)" :key="item.templatename">
                                     {{item.templatename}}
                                 </div>
                             </div>
@@ -127,13 +128,13 @@
                         <div>
                             <div class="confWapper flex" v-if="active==2">
                                 <div style="width: 50px;text-align: center;font-size: 16px;line-height: 34px;font-weight: 400;">CPU</div>
-                                <div class="item-type" v-bind:class="{ active: item.cpuNum==CPUNum }" v-for="item in CPU" @click="changeCPU(item.cpuNum)">{{item.cpuNum}}核</div>
+                                <div class="item-type" v-bind:class="{ active: item.cpuNum==CPUNum }" v-for="item in CPU" @click="changeCPU(item.cpuNum)" :key="item.cpuNum">{{item.cpuNum}}核</div>
                             </div>
                         </div>
 
-                        <div class="confWapper flex" v-if="active==2&&item.cpuNum==CPUNum" v-for="item in CPU">
+                        <div class="confWapper flex" v-if="active==2&&item.cpuNum==CPUNum" v-for="item in CPU" :key="item.cache">
                             <div style="width: 50px;text-align: center;font-size: 16px;line-height: 34px;font-weight: 400;">内存</div>
-                            <div class="item-type" v-bind:class="{ active: ite==CPUCache }" v-for="ite in item.cache" @click="changeCache(ite)">{{ite.cache}}G</div>
+                            <div class="item-type" v-bind:class="{ active: ite==CPUCache }" v-for="ite in item.cache" @click="changeCache(ite)" :key="ite.cache">{{ite.cache}}G</div>
                         </div>
 
                         <div class="confWapper flex" v-if="active==2">
@@ -147,7 +148,8 @@
                                 <el-option
                                         v-for="item in networkOptions"
                                         :label="item.name"
-                                        :value="item.ipsegmentid">
+                                        :value="item.ipsegmentid"
+                                        :key="item.ipsegmentid">
                                 </el-option>
                             </el-select>
                         </div>
@@ -200,9 +202,10 @@
                             <label>计费方式 : </label>
                             <el-select v-model="value" placeholder="请选择" class="eselect" @change="changePay">
                                 <el-option
-                                        v-for="item in payOptions" :key="item.value"
+                                        v-for="item in payOptions"
                                         :label="item.label"
-                                        :value="item.value">
+                                        :value="item.value"
+                                        :key="item.value">
                                 </el-option>
                             </el-select>
                         </div>
@@ -210,9 +213,10 @@
                             <label>购买时长 : </label>
                             <el-select v-model="timeValue" :disabled="value=='current'" placeholder="请选择" class="eselect" @change="changePay">
                                 <el-option
-                                        v-for="item in timeOptions" :key="item.value"
+                                        v-for="item in timeOptions"
                                         :label="item.label"
-                                        :value="item.value">
+                                        :value="item.value"
+                                        :key="item.value">
                                 </el-option>
                             </el-select>
                         </div>

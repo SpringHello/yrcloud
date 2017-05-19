@@ -6049,7 +6049,7 @@ module.exports = BoundingRect;
                 });
             } else {
                 __WEBPACK_IMPORTED_MODULE_4_element_ui_lib_message___default()({
-                    message: '获取数据失败',
+                    message: response.body.message,
                     type: 'error'
                 });
             }
@@ -35974,7 +35974,7 @@ var Component = __webpack_require__(4)(
   /* template */
   __webpack_require__(389),
   /* scopeId */
-  null,
+  "data-v-3d452e9f",
   /* cssModules */
   null
 )
@@ -36614,7 +36614,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            username: '未登录'
+            username: '未登录',
+            visible: true
         };
     },
     created: function created() {
@@ -36652,6 +36653,159 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_util_js__ = __webpack_require__(20);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -36659,9 +36813,77 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
-        return {};
+        return {
+            dialogVisible: false,
+            showType: 'balance',
+            tableData: [],
+            hostData: [],
+            ruleName: '',
+            privatePort: '',
+            publicPort: '',
+            ruleOptions: [{ name: '轮询算法', id: 'roundrobin' }, { name: '最小连接算法', id: 'leastconn' }, { name: '源算法', id: 'source' }],
+            rule: '',
+            publicIpOptions: [],
+            publicIp: '',
+            networkIdOptions: [],
+            networkId: '',
+            selectRow: null
+        };
+    },
+    created: function created() {
+        var url = 'loadbalance/listLoadBalanceRole.do';
+        __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].get(url, this, { tableData: 'result' });
+    },
+
+    methods: {
+        handleSelectAll: __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].handleSelectAll,
+        handleCurrentChange: __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].handleCurrentChange,
+        viewRule: function viewRule(row) {},
+        viewHost: function viewHost(row) {
+            this.showType = 'host';
+            var url = "loadbalance/listVmByRoleId.do?roleid=" + row.loadbalanceroleid;
+            __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].get(url, this, { hostData: 'result' });
+        },
+        createBalance: function createBalance() {
+            this.dialogVisible = true;
+            var url = "network/listLoadBalancePublicIp.do.do";
+            __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].get(url, this, { publicIpOptions: 'result' });
+        },
+        finishBalance: function finishBalance() {
+            this.dialogVisible = false;
+            var url = "loadbalance/createLoadBalanceRole.do";
+            url += '?name=' + this.ruleName;
+            url += '&privateport=' + this.privatePort;
+            url += '&publicport=' + this.publicPort;
+            url += '&algorithm=' + this.rule;
+            url += '&publicipid=' + this.publicIp;
+            url += '&networkid=' + this.networkId;
+            __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].get(url, this, { tableData: 'result' }, '创建负载均衡规则成功!');
+        },
+        switchPublicIp: function switchPublicIp(publicIpId) {
+            this.networkId = '';
+            for (var i in this.publicIpOptions) {
+                if (this.publicIpOptions[i].publicipid == publicIpId) {
+                    var url = "network/listNetworkByVpcId.do?vpcid=" + this.publicIpOptions[i].vpcid;
+                    __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].get(url, this, { networkIdOptions: 'result' });
+                    break;
+                }
+            }
+        },
+        deleteBalance: function deleteBalance() {
+            var url = 'loadbalance/deleteLoadBalancerRule.do?roleId=' + this.selectRow.loadbalanceroleid;
+            __WEBPACK_IMPORTED_MODULE_0__util_util_js__["a" /* default */].get(url, this, { tableData: 'result' }, '删除成功');
+        },
+        addHostToBalance: function addHostToBalance() {},
+        deleteHostFromBalance: function deleteHostFromBalance() {}
+    },
+    computed: {
+        isDisable: function isDisable() {
+            return !(this.ruleName && this.privatePort && this.publicPort && this.rule && this.publicIp && this.networkId);
+        }
     }
 });
 
@@ -36689,6 +36911,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
+//
+//
+//
 //
 //
 //
@@ -37152,7 +37377,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var loadingInstance = __WEBPACK_IMPORTED_MODULE_4_element_ui_lib_loading___default.a.service({
                 text: '磁盘删除中...'
             });
-            this.$http.get('Disk/deleteVolume.do?diskid=' + this.currentRow.id).then(function (response) {
+            this.$http.get('Disk/deleteVolume.do?diskid=' + this.currentRow.diskid).then(function (response) {
                 if (response.ok == true && response.status == 200) {
                     console.log(response.body);
                     if (response.body.status == 1) {
@@ -37601,6 +37826,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
  //
+//
+//
+//
+//
 //
 //
 //
@@ -38532,6 +38761,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -38693,6 +38923,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util_dateFormatter_js__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util_interfaceUtil_js__ = __webpack_require__(62);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__util_util_js__ = __webpack_require__(20);
+//
 //
 //
 //
@@ -39079,6 +39310,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -39203,6 +39438,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_validate_js__ = __webpack_require__(202);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util_interfaceUtil_js__ = __webpack_require__(62);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util_util_js__ = __webpack_require__(20);
+//
+//
 //
 //
 //
@@ -39676,22 +39913,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            tableData: [],
-            diskData: [],
+            tableDataVM: [],
+            tableDataDisk: [],
             currentRow: null,
             deletePrompt: false,
             revertPrompt: false,
@@ -39709,7 +39936,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.$http.get('Snapshot/listVMSnapshotAll.do').then(function (response) {
             if (response.ok == true && response.status == 200) {
                 //console.log(response.body);
-                _this.tableData = response.body;
+                _this.tableDataVM = response.body.result;
             }
         }, function (response) {});
     },
@@ -39731,21 +39958,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         toggle: function toggle(type) {
             var _this2 = this;
 
-            this.tableData = [];
+            this.tableDataVM = [];
+            this.tableDataDisk = [];
             this.currentRow = null;
             this.show = type;
             if (type == 'host') {
                 this.$http.get('Snapshot/listVMSnapshotAll.do').then(function (response) {
                     if (response.ok == true && response.status == 200) {
                         //console.log(response.body);
-                        _this2.tableData = response.body;
+                        _this2.tableDataVM = response.body.result;
                     }
                 }, function (response) {});
             } else {
                 this.$http.get('Snapshot/listSnapshots.do').then(function (response) {
                     if (response.ok == true && response.status == 200) {
                         //console.log(response.body);
-                        _this2.diskData = response.body.listsnapshotsresponse.snapshot;
+                        _this2.tableDataDisk = response.body.result;
                     }
                 }, function (response) {});
             }
@@ -39759,17 +39987,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var loadingInstance = __WEBPACK_IMPORTED_MODULE_4_element_ui_lib_loading___default.a.service({
                 text: '正在恢复磁盘...'
             });
-            this.$http.get('Snapshot/revertSnapshot.do?id=' + this.currentRow.id).then(function (response) {
+            this.$http.get('Snapshot/revertSnapshot.do?id=' + this.currentRow.snapshotid).then(function (response) {
                 loadingInstance.close();
-                if (response.ok == true && response.status) {
-                    __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                        message: '恢复成功',
-                        type: 'success'
-                    });
-                    _this3.tableData = response.body.listsnapshotsresponse.snapshot;
+                if (response.ok == true && response.status == 200) {
+                    if (response.body.status == 1) {
+                        __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
+                            message: '恢复成功',
+                            type: 'success'
+                        });
+                        _this3.tableDataDisk = response.body.result;
+                    } else {
+                        __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
+                            message: response.body.message,
+                            type: 'error'
+                        });
+                    }
                 } else {
                     __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                        message: '恢复失败',
+                        message: response.body.message,
                         type: 'error'
                     });
                 }
@@ -39784,7 +40019,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var loadingInstance = __WEBPACK_IMPORTED_MODULE_4_element_ui_lib_loading___default.a.service({
                 text: '正在删除磁盘...'
             });
-            this.$http.get('Snapshot/deleteSnapshot.do?id=' + this.currentRow.id).then(function (response) {
+            this.$http.get('Snapshot/deleteSnapshot.do?id=' + this.currentRow.snapshotid).then(function (response) {
                 loadingInstance.close();
                 if (response.ok == true && response.status == 200) {
                     loadingInstance.close();
@@ -39793,17 +40028,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             message: '删除成功',
                             type: 'success'
                         });
-                        if (response.body.listsnapshotsresponse.hasOwnProperty('snapshot')) {
-                            _this4.tableData = __WEBPACK_IMPORTED_MODULE_5__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listsnapshotsresponse.snapshot);
-                        } else {
-                            _this4.tableData = [];
-                        }
+
+                        _this4.tableDataDisk = response.body.result;
                     } else if (response.body.status == 2) {
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '删除失败',
+                            message: response.body.message,
                             type: 'error'
                         });
-                        _this4.tableData = __WEBPACK_IMPORTED_MODULE_5__util_dateFormatter_js__["a" /* default */].dateFormat(response.body.listsnapshotsresponse.snapshot);
                     } else {
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
                             message: '删除超时',
@@ -39836,7 +40067,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     //this.tableData = response.body.listsnapshotsresponse.snapshot;
                 } else {
                     __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                        message: '恢复失败',
+                        message: response.body.message,
                         type: 'error'
                     });
                 }
@@ -39860,13 +40091,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             message: '删除成功',
                             type: 'success'
                         });
-                        _this5.tableData = response.body.list;
+                        _this5.tableDataVM = response.body.result;
                     } else {
                         __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
-                            message: '删除失败',
+                            message: response.body.message,
                             type: 'error'
                         });
-                        _this5.tableData = response.body.list;
                     }
                 } else {
                     __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
@@ -39882,11 +40112,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         format: function format(row) {
-            return 'hello';
-            //return row.isbestnew=='0'?'已过时':'最新备份';
-        },
-        diskFormat: function diskFormat(row) {
-            return 'nihao';
+            // console.log(row);
+            return row.isbestnew == 0 ? '已过时' : '最新备份';
         }
     }
 });
@@ -40705,6 +40932,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
+//import alert from './package/alert/index.js';
 
 
 
@@ -40756,6 +40984,7 @@ __WEBPACK_IMPORTED_MODULE_55_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_5_el
 __WEBPACK_IMPORTED_MODULE_55_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_3_element_ui_lib_form___default.a);
 __WEBPACK_IMPORTED_MODULE_55_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_1_element_ui_lib_form_item___default.a);
 __WEBPACK_IMPORTED_MODULE_55_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_59__package_slider_index_js__["a" /* default */]);
+//Vue.use(alert);
 new __WEBPACK_IMPORTED_MODULE_55_vue__["default"]({
     render: function render(h) {
         return h(__WEBPACK_IMPORTED_MODULE_58__app_vue___default.a);
@@ -55104,6 +55333,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.zoneOptions), function(item) {
     return _c('el-option', {
+      key: item.id,
       attrs: {
         "label": item.name,
         "value": item.id
@@ -55356,6 +55586,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.zoneOptions), function(zone) {
     return _c('el-option', {
+      key: zone.id,
       attrs: {
         "label": zone.name,
         "value": zone.id
@@ -55378,6 +55609,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.vpcOptions), function(vpc) {
     return _c('el-option', {
+      key: vpc.vpcid,
       attrs: {
         "label": vpc.vpcname,
         "value": vpc.vpcid
@@ -55559,6 +55791,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.vpcOptions), function(vpc) {
     return _c('el-option', {
+      key: vpc.vpcid,
       attrs: {
         "label": vpc.vpcname,
         "value": vpc.vpcid
@@ -55685,6 +55918,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.hostOptions), function(host) {
     return _c('el-option', {
+      key: host.computerid,
       attrs: {
         "value": host.computerid,
         "label": host.computername
@@ -55958,6 +56192,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.zoneOptions), function(item) {
     return _c('el-option', {
+      key: item.id,
       attrs: {
         "label": item.name,
         "value": item.id
@@ -55999,6 +56234,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })], 1), _vm._v(" "), _vm._l((_vm.OS[_vm.radio]), function(item) {
     return _c('div', {
+      key: item.templatename,
       staticClass: "OSClass",
       class: {
         active: item == _vm.select
@@ -56021,6 +56257,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("CPU")]), _vm._v(" "), _vm._l((_vm.CPU), function(item) {
     return _c('div', {
+      key: item.cpuNum,
       staticClass: "item-type",
       class: {
         active: item.cpuNum == _vm.CPUNum
@@ -56033,6 +56270,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_vm._v(_vm._s(item.cpuNum) + "核")])
   })], 2) : _vm._e()]), _vm._v(" "), _vm._l((_vm.CPU), function(item) {
     return (_vm.active == 2 && item.cpuNum == _vm.CPUNum) ? _c('div', {
+      key: item.cache,
       staticClass: "confWapper flex"
     }, [_c('div', {
       staticStyle: {
@@ -56044,6 +56282,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_vm._v("内存")]), _vm._v(" "), _vm._l((item.cache), function(ite) {
       return _c('div', {
+        key: ite.cache,
         staticClass: "item-type",
         class: {
           active: ite == _vm.CPUCache
@@ -56110,6 +56349,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.networkOptions), function(item) {
     return _c('el-option', {
+      key: item.ipsegmentid,
       attrs: {
         "label": item.name,
         "value": item.ipsegmentid
@@ -56587,14 +56827,335 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _vm._m(0)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "wapper"
-  }, [_c('div', {
+  }, [(_vm.showType == 'balance') ? _c('div', {
     staticClass: "operStage"
-  }, [_vm._v("负载均衡")])])
-}]}
+  }, [_c('el-button', {
+    attrs: {
+      "type": "primary"
+    },
+    on: {
+      "click": _vm.createBalance
+    }
+  }, [_vm._v("创建负载均衡")]), _vm._v(" "), _c('el-button', {
+    attrs: {
+      "type": "primary",
+      "disabled": _vm.selectRow == null
+    },
+    on: {
+      "click": _vm.deleteBalance
+    }
+  }, [_vm._v("删除负载均衡")]), _vm._v(" "), _c('el-button', {
+    attrs: {
+      "type": "primary",
+      "disabled": _vm.selectRow == null
+    },
+    on: {
+      "click": _vm.addHostToBalance
+    }
+  }, [_vm._v("添加虚拟机")]), _vm._v(" "), _c('el-button', {
+    attrs: {
+      "type": "primary",
+      "disabled": _vm.selectRow == null
+    },
+    on: {
+      "click": _vm.deleteHostFromBalance
+    }
+  }, [_vm._v("删除虚拟机")]), _vm._v(" "), _c('div', {
+    staticClass: "table"
+  }, [_c('el-table', {
+    staticStyle: {
+      "width": "100%"
+    },
+    attrs: {
+      "data": _vm.tableData,
+      "border": "",
+      "tooltip-effect": "dark"
+    },
+    on: {
+      "select-all": _vm.handleSelectAll,
+      "select": _vm.handleCurrentChange
+    }
+  }, [_c('el-table-column', {
+    attrs: {
+      "type": "selection",
+      "width": "55"
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "name",
+      "label": "名称",
+      "show-overflow-tooltip": ""
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "publicport",
+      "label": "公共端口"
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "privateport",
+      "label": "私有端口",
+      "show-overflow-tooltip": ""
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "belongpublicip",
+      "label": "所属IP",
+      "show-overflow-tooltip": ""
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "netwrokname",
+      "label": "所属网络",
+      "show-overflow-tooltip": ""
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "fixed": "right",
+      "label": "操作",
+      "width": "100"
+    },
+    scopedSlots: _vm._u([{
+      key: "default",
+      fn: function(scope) {
+        return [_c('el-button', {
+          attrs: {
+            "type": "text",
+            "size": "small"
+          },
+          on: {
+            "click": function($event) {
+              _vm.viewRule(scope.row)
+            }
+          }
+        }, [_vm._v("查看规则")]), _vm._v(" "), _c('el-button', {
+          attrs: {
+            "type": "text",
+            "size": "small"
+          },
+          on: {
+            "click": function($event) {
+              _vm.viewHost(scope.row)
+            }
+          }
+        }, [_vm._v("查看主机")])]
+      }
+    }])
+  })], 1)], 1)], 1) : _vm._e(), _vm._v(" "), (_vm.showType == 'host') ? _c('div', {
+    staticClass: "operStage"
+  }, [_c('div', {
+    staticClass: "table"
+  }, [_c('el-table', {
+    staticStyle: {
+      "width": "100%"
+    },
+    attrs: {
+      "data": _vm.hostData,
+      "border": "",
+      "tooltip-effect": "dark"
+    },
+    on: {
+      "select-all": _vm.handleSelectAll,
+      "select": _vm.handleCurrentChange
+    }
+  }, [_c('el-table-column', {
+    attrs: {
+      "type": "selection",
+      "width": "55"
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "name",
+      "label": "名称",
+      "show-overflow-tooltip": ""
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "publicport",
+      "label": "公共端口"
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "privateport",
+      "label": "私有端口",
+      "show-overflow-tooltip": ""
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "belongpublicip",
+      "label": "所属IP",
+      "show-overflow-tooltip": ""
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
+      "prop": "netwrokname",
+      "label": "所属网络",
+      "show-overflow-tooltip": ""
+    }
+  })], 1)], 1)]) : _vm._e(), _vm._v(" "), _c('el-dialog', {
+    attrs: {
+      "title": "创建规则",
+      "size": "tiny",
+      "modal-append-to-body": false
+    },
+    model: {
+      value: (_vm.dialogVisible),
+      callback: function($$v) {
+        _vm.dialogVisible = $$v
+      },
+      expression: "dialogVisible"
+    }
+  }, [_c('div', {
+    staticStyle: {
+      "display": "flex",
+      "border-top": "2px solid #000"
+    }
+  }, [_c('div', {
+    staticClass: "config"
+  }, [_c('div', {
+    staticClass: "confWapper"
+  }, [_c('div', {
+    staticClass: "label"
+  }, [_vm._v("规则名")]), _vm._v(" "), _c('div', {
+    staticStyle: {
+      "width": "217px"
+    }
+  }, [_c('el-input', {
+    attrs: {
+      "placeholder": "请输入规则名"
+    },
+    model: {
+      value: (_vm.ruleName),
+      callback: function($$v) {
+        _vm.ruleName = $$v
+      },
+      expression: "ruleName"
+    }
+  })], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "confWapper"
+  }, [_c('div', {
+    staticClass: "label"
+  }, [_vm._v("私有端口")]), _vm._v(" "), _c('div', {
+    staticStyle: {
+      "width": "217px"
+    }
+  }, [_c('el-input', {
+    attrs: {
+      "placeholder": "请输入私有端口"
+    },
+    model: {
+      value: (_vm.privatePort),
+      callback: function($$v) {
+        _vm.privatePort = $$v
+      },
+      expression: "privatePort"
+    }
+  })], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "confWapper"
+  }, [_c('div', {
+    staticClass: "label"
+  }, [_vm._v("共有端口")]), _vm._v(" "), _c('div', {
+    staticStyle: {
+      "width": "217px"
+    }
+  }, [_c('el-input', {
+    attrs: {
+      "placeholder": "请输入共有端口"
+    },
+    model: {
+      value: (_vm.publicPort),
+      callback: function($$v) {
+        _vm.publicPort = $$v
+      },
+      expression: "publicPort"
+    }
+  })], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "confWapper"
+  }, [_c('div', {
+    staticClass: "label"
+  }, [_vm._v("算法")]), _vm._v(" "), _c('el-select', {
+    attrs: {
+      "placeholder": "请选择"
+    },
+    model: {
+      value: (_vm.rule),
+      callback: function($$v) {
+        _vm.rule = $$v
+      },
+      expression: "rule"
+    }
+  }, _vm._l((_vm.ruleOptions), function(item) {
+    return _c('el-option', {
+      key: item.id,
+      attrs: {
+        "label": item.name,
+        "value": item.id
+      }
+    })
+  }))], 1), _vm._v(" "), _c('div', {
+    staticClass: "confWapper"
+  }, [_c('div', {
+    staticClass: "label"
+  }, [_vm._v("公共IP")]), _vm._v(" "), _c('el-select', {
+    attrs: {
+      "placeholder": "请选择"
+    },
+    on: {
+      "change": _vm.switchPublicIp
+    },
+    model: {
+      value: (_vm.publicIp),
+      callback: function($$v) {
+        _vm.publicIp = $$v
+      },
+      expression: "publicIp"
+    }
+  }, _vm._l((_vm.publicIpOptions), function(item) {
+    return _c('el-option', {
+      key: item.publicipid,
+      attrs: {
+        "label": item.publicip,
+        "value": item.publicipid
+      }
+    })
+  }))], 1), _vm._v(" "), _c('div', {
+    staticClass: "confWapper"
+  }, [_c('div', {
+    staticClass: "label"
+  }, [_vm._v("网络")]), _vm._v(" "), _c('el-select', {
+    attrs: {
+      "placeholder": "请选择"
+    },
+    model: {
+      value: (_vm.networkId),
+      callback: function($$v) {
+        _vm.networkId = $$v
+      },
+      expression: "networkId"
+    }
+  }, _vm._l((_vm.networkIdOptions), function(item) {
+    return _c('el-option', {
+      key: item.ipsegmentid,
+      attrs: {
+        "label": item.ipsegment,
+        "value": item.ipsegmentid
+      }
+    })
+  }))], 1)])]), _vm._v(" "), _c('span', {
+    staticClass: "dialog-footer",
+    slot: "footer"
+  }, [_c('el-button', {
+    attrs: {
+      "type": "primary",
+      "disabled": _vm.isDisable
+    },
+    on: {
+      "click": _vm.finishBalance
+    }
+  }, [_vm._v("创建")])], 1)])], 1)
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
@@ -56718,7 +57279,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "interval": 8000
     }
   }, _vm._l((_vm.items), function(item) {
-    return _c('el-carousel-item', [_c('div', {
+    return _c('el-carousel-item', {
+      key: item
+    }, [_c('div', {
       staticStyle: {
         "display": "flex",
         "flex-wrap": "wrap",
@@ -56728,6 +57291,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, _vm._l((item), function(i) {
       return _c('div', {
+        key: i.title,
         staticClass: "flex-item"
       }, [_c('span', [_vm._v(_vm._s(i.title))]), _vm._v(" "), _c('p', [_vm._v("    " + _vm._s(i.des))]), _vm._v(" "), _c('a', {
         attrs: {
@@ -57103,6 +57667,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.zoneOptions), function(item) {
     return _c('el-option', {
+      key: item.id,
       attrs: {
         "label": item.name,
         "value": item.id
@@ -57159,6 +57724,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.diskOptions), function(item) {
     return _c('el-option', {
+      key: item.size,
       attrs: {
         "label": item.descs,
         "value": item.size
@@ -57284,6 +57850,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.mountOptions), function(item) {
     return _c('el-option', {
+      key: item.computerid,
       attrs: {
         "label": item.computername,
         "value": item.computerid
@@ -57498,6 +58065,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.options), function(item) {
     return _c('el-option', {
+      key: item.value,
       attrs: {
         "label": item.label,
         "value": item.value
@@ -57878,7 +58446,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "width": "100%"
     },
     attrs: {
-      "data": _vm.tableData,
+      "data": _vm.tableDataVM,
       "border": "",
       "tooltip-effect": "dark"
     },
@@ -57893,27 +58461,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "computerid",
-      "label": "主机编号",
-      "show-overflow-tooltip": ""
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
-      "prop": "snapshotid",
-      "label": "快照id",
+      "prop": "name",
+      "label": "主机名",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
       "prop": "addtime",
-      "label": "创建时间",
+      "label": "备份时间",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "status",
+      "prop": "isbestnew",
       "label": "是否最新",
-      "formatter": _vm.diskFormat,
+      "formatter": _vm.format1,
       "show-overflow-tooltip": ""
     }
   })], 1)], 1)], 1) : _vm._e(), _vm._v(" "), (_vm.show == 'disk') ? _c('div', {
@@ -57945,7 +58507,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "width": "100%"
     },
     attrs: {
-      "data": _vm.diskData,
+      "data": _vm.tableDataDisk,
       "border": "",
       "tooltip-effect": "dark"
     },
@@ -57960,27 +58522,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "id",
-      "label": "磁盘编号",
-      "show-overflow-tooltip": ""
-    }
-  }), _vm._v(" "), _c('el-table-column', {
-    attrs: {
       "prop": "name",
       "label": "磁盘名",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "created",
-      "label": "创建时间",
+      "prop": "addtime",
+      "label": "备份时间",
       "show-overflow-tooltip": ""
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
-      "prop": "state",
-      "label": "状态",
-      "formatter": _vm.diskFormat,
+      "prop": "isbestnew",
+      "label": "是否最新",
+      "formatter": _vm.format,
       "show-overflow-tooltip": ""
     }
   })], 1)], 1)], 1) : _vm._e(), _vm._v(" "), _c('el-dialog', {

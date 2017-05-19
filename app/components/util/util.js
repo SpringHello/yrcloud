@@ -17,7 +17,7 @@ export default{
                     });
             }else{
                 Message({
-                    message:'获取数据失败',
+                    message:response.body.message,
                     type:'error'
                 });
             }

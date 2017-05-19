@@ -70,7 +70,8 @@
                                         <el-option
                                                 v-for="item in zoneOptions"
                                                 :label="item.name"
-                                                :value="item.id">
+                                                :value="item.id"
+                                                :key="item.id">
                                         </el-option>
                                     </el-select>
                                 </div>

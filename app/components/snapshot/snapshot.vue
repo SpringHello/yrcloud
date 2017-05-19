@@ -11,7 +11,7 @@
                 <el-button type="primary" :disabled="this.currentRow==null" @click="deleteHostPrompt = true">删除备份</el-button>
                 <div class="table">
                     <el-table
-                            :data="tableData"
+                            :data="tableDataVM"
                             border
                             tooltip-effect="dark"
                             style="width: 100%"
@@ -22,24 +22,19 @@
                                 width="55">
                         </el-table-column>
                         <el-table-column
-                                prop="computerid"
-                                label="主机编号"
-                                show-overflow-tooltip>
-                        </el-table-column>
-                        <el-table-column
-                                prop="snapshotid"
-                                label="快照id"
+                                prop="name"
+                                label="主机名"
                                 show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column
                                 prop="addtime"
-                                label="创建时间"
+                                label="备份时间"
                                 show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column
-                                prop="status"
+                                prop="isbestnew"
                                 label="是否最新"
-                                :formatter="diskFormat"
+                                :formatter="format1"
                                 show-overflow-tooltip>
                         </el-table-column>
                     </el-table>
@@ -51,7 +46,7 @@
                 <el-button type="primary" :disabled="this.currentRow==null" @click="deletePrompt = true">删除备份</el-button>
                 <div class="table">
                     <el-table
-                            :data="diskData"
+                            :data="tableDataDisk"
                             border
                             tooltip-effect="dark"
                             style="width: 100%"
@@ -62,24 +57,19 @@
                                 width="55">
                         </el-table-column>
                         <el-table-column
-                                prop="id"
-                                label="磁盘编号"
-                                show-overflow-tooltip>
-                        </el-table-column>
-                        <el-table-column
                                 prop="name"
                                 label="磁盘名"
                                 show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column
-                                prop="created"
-                                label="创建时间"
+                                prop="addtime"
+                                label="备份时间"
                                 show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column
-                                prop="state"
-                                label="状态"
-                                :formatter="diskFormat"
+                                prop="isbestnew"
+                                label="是否最新"
+                                :formatter="format"
                                 show-overflow-tooltip>
                         </el-table-column>
                     </el-table>
@@ -126,8 +116,8 @@
     export default{
         data(){
             return {
-                tableData:[],
-                diskData:[],
+                tableDataVM:[],
+                tableDataDisk:[],
                 currentRow:null,
                 deletePrompt:false,
                 revertPrompt:false,
@@ -143,7 +133,7 @@
             this.$http.get('Snapshot/listVMSnapshotAll.do').then(response => {
                 if(response.ok==true&&response.status==200){
                     //console.log(response.body);
-                    this.tableData = response.body
+                    this.tableDataVM = response.body.result
                 }
             },response => {
 
@@ -164,14 +154,15 @@
                 this.currentRow = null;
             },
             toggle(type){
-                this.tableData = [];
+                this.tableDataVM = [];
+                this.tableDataDisk = [];
                 this.currentRow = null;
                 this.show = type;
                 if(type=='host'){
                     this.$http.get('Snapshot/listVMSnapshotAll.do').then(response => {
                         if(response.ok==true&&response.status==200){
                             //console.log(response.body);
-                            this.tableData = response.body
+                            this.tableDataVM = response.body.result
                         }
                     },response => {
 
@@ -180,7 +171,7 @@
                     this.$http.get('Snapshot/listSnapshots.do').then(response => {
                         if(response.ok==true&&response.status==200){
                             //console.log(response.body);
-                            this.diskData = response.body.listsnapshotsresponse.snapshot;
+                            this.tableDataDisk = response.body.result;
                         }
                     },response => {
 
@@ -193,17 +184,27 @@
                 let loadingInstance = Loading.service({
                     text:'正在恢复磁盘...'
                 })
-                this.$http.get('Snapshot/revertSnapshot.do?id='+this.currentRow.id).then(response => {
+                this.$http.get('Snapshot/revertSnapshot.do?id='+this.currentRow.snapshotid).then(response => {
                     loadingInstance.close();
-                    if(response.ok==true&&response.status){
-                        Message({
+                    if(response.ok==true&&response.status==200){
+                        if(response.body.status==1){
+                            Message({
                             message:'恢复成功',
                             type:'success'
                         });
-                        this.tableData = response.body.listsnapshotsresponse.snapshot;
+                            this.tableDataDisk = response.body.result;
+                        }
+                        else{
+                            Message({
+                                message: response.body.message,
+                                type:'error'
+                            });
+                        }
+
+
                     }else{
                         Message({
-                            message:'恢复失败',
+                            message: response.body.message,
                             type:'error'
                         });
                     }
@@ -217,7 +218,7 @@
                 let loadingInstance = Loading.service({
                     text:'正在删除磁盘...'
                 })
-                this.$http.get('Snapshot/deleteSnapshot.do?id='+this.currentRow.id).then(response => {
+                this.$http.get('Snapshot/deleteSnapshot.do?id='+this.currentRow.snapshotid).then(response => {
                     loadingInstance.close();
                     if(response.ok==true&&response.status==200){
                         loadingInstance.close();
@@ -226,18 +227,15 @@
                                 message:'删除成功',
                                 type:'success'
                             });
-                            if(response.body.listsnapshotsresponse.hasOwnProperty('snapshot')){
-                                this.tableData = dateFormatter.dateFormat(response.body.listsnapshotsresponse.snapshot);
-                            }else{
-                                this.tableData = [];
-                            }
+
+                            this.tableDataDisk = response.body.result;
+
 
                         }else if(response.body.status==2){
                             Message({
-                                message:'删除失败',
+                                message:response.body.message,
                                 type:'error'
                             });
-                            this.tableData = dateFormatter.dateFormat(response.body.listsnapshotsresponse.snapshot);
                         }else{
                             Message({
                                 message:'删除超时',
@@ -271,7 +269,7 @@
                         //this.tableData = response.body.listsnapshotsresponse.snapshot;
                     }else{
                         Message({
-                            message:'恢复失败',
+                            message:response.body.message,
                             type:'error'
                         });
                     }
@@ -294,13 +292,13 @@
                                 message:'删除成功',
                                 type:'success'
                             });
-                            this.tableData = response.body.list;
+                            this.tableDataVM = response.body.result;
                         }else{
                             Message({
-                                message:'删除失败',
+                                message:response.body.message,
                                 type:'error'
                             });
-                            this.tableData = response.body.list;
+
                         }
                     }else{
                         Message({
@@ -316,11 +314,8 @@
                 })
             },
             format(row){
-                return 'hello';
-                //return row.isbestnew=='0'?'已过时':'最新备份';
-            },
-            diskFormat(row){
-                return 'nihao'
+               // console.log(row);
+                return row.isbestnew==0?'已过时':'最新备份';
             }
         }
     }

@@ -5,7 +5,7 @@ import App from './app.vue';
 import {Button,Menu,Submenu,MenuItem,Table,TableColumn,Tooltip,Dialog,Steps,Step,RadioGroup,
     RadioButton,Select,Option,Slider,Switch,Dropdown,DropdownMenu,DropdownItem,Input,Radio,DatePicker,Pagination,Carousel,carouselItem,Form,FormItem} from 'element-ui';
 import slider from './package/slider/index.js';
-import alert from './package/alert/index.js';
+//import alert from './package/alert/index.js';
 import icon from '../assets/iconfont.css';
 import host from './components/host/host.vue';
 import VPC from './components/network/VPC.vue';
@@ -75,7 +75,7 @@ Vue.use(carouselItem);
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(slider);
-Vue.use(alert);
+//Vue.use(alert);
 new Vue({
     render:h => h(App),
     router,

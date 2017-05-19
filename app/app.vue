@@ -24,7 +24,6 @@
                 </li>
             </ul>
         </header>
-        <my-alert></my-alert>
         <y-menu></y-menu>
         <router-view></router-view>
     </div>

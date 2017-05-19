@@ -71,7 +71,8 @@
                                         <el-option
                                                 v-for="vpc in vpcOptions"
                                                 :label="vpc.vpcname"
-                                                :value="vpc.vpcid">
+                                                :value="vpc.vpcid"
+                                                :key="vpc.vpcid">
                                         </el-option>
                                     </el-select>
                                 </div>
@@ -105,9 +106,10 @@
                             <label>计费方式 : </label>
                             <el-select v-model="value" placeholder="请选择" class="eselect" @change="processTimeChange">
                                 <el-option
-                                        v-for="item in payOptions" :key="item.value"
+                                        v-for="item in payOptions"
                                         :label="item.label"
-                                        :value="item.value">
+                                        :value="item.value"
+                                        :key="item.value">
                                 </el-option>
                             </el-select>
                         </div>
@@ -115,9 +117,10 @@
                             <label>购买时长 : </label>
                             <el-select v-model="timeValue" :disabled="value=='current'" placeholder="请选择" class="eselect" @change="changePay">
                                 <el-option
-                                        v-for="item in timeOptions" :key="item.value"
+                                        v-for="item in timeOptions"
                                         :label="item.label"
-                                        :value="item.value">
+                                        :value="item.value"
+                                        :key="item.value">
                                 </el-option>
                             </el-select>
                         </div>
@@ -142,7 +145,8 @@
                                 <el-option
                                         v-for="host in hostOptions"
                                         :value="host.computerid"
-                                        :label="host.computername">
+                                        :label="host.computername"
+                                        :key="host.computerid">
                                 </el-option>
                             </el-select>
                         </div>

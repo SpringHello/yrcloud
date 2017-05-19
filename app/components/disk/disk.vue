@@ -82,7 +82,8 @@
                                 <el-option
                                         v-for="item in zoneOptions"
                                         :label="item.name"
-                                        :value="item.id">
+                                        :value="item.id"
+                                        :key="item.id">
                                 </el-option>
                             </el-select>
                         </div>
@@ -98,7 +99,8 @@
                                 <el-option
                                         v-for="item in diskOptions"
                                         :label="item.descs"
-                                        :value="item.size">
+                                        :value="item.size"
+                                        :key="item.size">
                                 </el-option>
                             </el-select>
                         </div>
@@ -170,7 +172,8 @@
                             <el-option
                                     v-for="item in mountOptions"
                                     :label="item.computername"
-                                    :value="item.computerid">
+                                    :value="item.computerid"
+                                    :key="item.computerid">
                             </el-option>
                         </el-select>
                     </div>
@@ -454,7 +457,7 @@
                 let loadingInstance = Loading.service({
                     text:'磁盘删除中...'
                 })
-                this.$http.get('Disk/deleteVolume.do?diskid='+this.currentRow.id).then(response => {
+                this.$http.get('Disk/deleteVolume.do?diskid='+this.currentRow.diskid).then(response => {
                     if(response.ok==true&&response.status==200){
                         console.log(response.body);
                         if(response.body.status==1){
