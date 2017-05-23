@@ -51,6 +51,12 @@
                             show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column
+                            prop="disksize"
+                            label="磁盘大小（G）"
+                            width="100"
+                            show-overflow-tooltip>
+                    </el-table-column>
+                    <el-table-column
                             width="120"
                             prop="caseTpye"
                             label="购买方式"
@@ -76,9 +82,10 @@
                     <el-table-column
                             fixed="right"
                             label="操作"
-                            width="100">
+                            width="170">
                         <template scope="scope">
                             <el-button @click="showInformation(scope.row)" type="text" size="small">查看主机</el-button>
+                            <el-button @click="linkHost(scope.row)" type="text" size="small">远程连接</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -93,20 +100,25 @@
                                 <el-step title="镜像选择"></el-step>
                                 <el-step title="配置选择"></el-step>
                                 <el-step title="网络选择"></el-step>
-                                <el-step title="取名"></el-step>
+
                             </el-steps>
                         </div>
 
                         <div class="confWapper" v-if="active==0">
-                            <div style="width: 50px;text-align: center;font-size: 16px;line-height: 34px;font-weight: 400;">区域</div>
+                            <div style="width: 75px;text-align: center;font-size: 16px;line-height: 34px;font-weight: 400;">区域</div>
                             <el-select v-model="zone" placeholder="请选择">
                                 <el-option
                                         v-for="item in zoneOptions"
                                         :label="item.name"
-                                        :value="item.id"
-                                        :key="item.id">
+                                        :value="item.id">
                                 </el-option>
                             </el-select>
+                        </div>
+                        <div class="confWapper flex" v-if="active==0">
+                            <div style="width: 75px;text-align: center;font-size: 16px;line-height: 34px;font-weight: 400;">主机名：</div>
+                            <div  style="width:38%">
+                                <el-input v-model="networkname"  placeholder="请输入主机名"></el-input>
+                            </div>
                         </div>
 
                         <div class="confWapper" v-if="active==1">
@@ -120,7 +132,7 @@
                                 </el-radio-group>
 
 
-                                <div class="OSClass" v-bind:class="{ active: item==select }" v-for="item in OS[radio]" @click="change(item)" :key="item.templatename">
+                                <div class="OSClass" v-bind:class="{ active: item==select }" v-for="item in OS[radio]" @click="change(item)">
                                     {{item.templatename}}
                                 </div>
                             </div>
@@ -128,18 +140,27 @@
                         <div>
                             <div class="confWapper flex" v-if="active==2">
                                 <div style="width: 50px;text-align: center;font-size: 16px;line-height: 34px;font-weight: 400;">CPU</div>
-                                <div class="item-type" v-bind:class="{ active: item.cpuNum==CPUNum }" v-for="item in CPU" @click="changeCPU(item.cpuNum)" :key="item.cpuNum">{{item.cpuNum}}核</div>
+                                <div class="item-type" v-bind:class="{ active: item.cpuNum==CPUNum }" v-for="item in CPU" @click="changeCPU(item.cpuNum)">{{item.cpuNum}}核</div>
                             </div>
                         </div>
 
-                        <div class="confWapper flex" v-if="active==2&&item.cpuNum==CPUNum" v-for="item in CPU" :key="item.cache">
+                        <div class="confWapper flex" v-if="active==2&&item.cpuNum==CPUNum" v-for="item in CPU">
                             <div style="width: 50px;text-align: center;font-size: 16px;line-height: 34px;font-weight: 400;">内存</div>
-                            <div class="item-type" v-bind:class="{ active: ite==CPUCache }" v-for="ite in item.cache" @click="changeCache(ite)" :key="ite.cache">{{ite.cache}}G</div>
+                            <div class="item-type" v-bind:class="{ active: ite==CPUCache }" v-for="ite in item.cache" @click="changeCache(ite)">{{ite.cache}}G</div>
                         </div>
 
                         <div class="confWapper flex" v-if="active==2">
                             <div style="width: 50px;text-align: center;font-size: 16px;line-height: 34px;font-weight: 400;">硬盘</div>
-                            <div style="width:70%"><el-slider v-model="disk" :step="10" show-input @change="calculationPay"></el-slider></div>
+                            <div style="width:70%">
+                                <my-slider
+                                        v-model="disk"
+                                        unit="G"
+                                        :points="[30,50]"
+                                        @change="calculationPay">
+                                </my-slider>
+
+                                <!-- <el-slider v-model="disk" :step="10" show-input @change="calculationPay"></el-slider>-->
+                            </div>
                         </div>
 
                         <div class="confWapper flex" v-if="active==3">
@@ -148,26 +169,13 @@
                                 <el-option
                                         v-for="item in networkOptions"
                                         :label="item.name"
-                                        :value="item.ipsegmentid"
-                                        :key="item.ipsegmentid">
+                                        :value="item.ipsegmentid">
                                 </el-option>
                             </el-select>
                         </div>
 
-                        <div class="confWapper flex" v-if="active==3">
-                            <div style="width: 50px;text-align: center;font-size: 16px;line-height: 34px;font-weight: 400;">带宽</div>
-                            <div style="width:70%">
-                                <el-slider v-model="bandwidth" show-input @change="calculationPay">
 
-                                </el-slider>
-                            </div>
-                        </div>
-                        <div class="confWapper flex" v-if="active==4">
-                            <div style="width: 50px;text-align: center;font-size: 16px;line-height: 34px;font-weight: 400;">输入虚拟机名字：</div>
-                            <div style="width:70%">
-                                <el-input v-model="networkname" placeholder="请输入内容"></el-input>
-                            </div>
-                        </div>
+
                     </div>
 
                     <div class="display">
@@ -186,9 +194,6 @@
                         <div>
                             <label>网络 : </label><span>{{networkName}}</span>
                         </div>
-                        <div>
-                            <label>带宽 : </label><span>{{bandwidth}}</span>
-                        </div>
                         <div v-if="value=='current'">
                             <p>按需付费，根据资源的实际使用量收费，精确到秒。先使用后付费。</p>
                         </div>
@@ -202,10 +207,9 @@
                             <label>计费方式 : </label>
                             <el-select v-model="value" placeholder="请选择" class="eselect" @change="changePay">
                                 <el-option
-                                        v-for="item in payOptions"
+                                        v-for="item in payOptions" :key="item.value"
                                         :label="item.label"
-                                        :value="item.value"
-                                        :key="item.value">
+                                        :value="item.value">
                                 </el-option>
                             </el-select>
                         </div>
@@ -213,10 +217,9 @@
                             <label>购买时长 : </label>
                             <el-select v-model="timeValue" :disabled="value=='current'" placeholder="请选择" class="eselect" @change="changePay">
                                 <el-option
-                                        v-for="item in timeOptions"
+                                        v-for="item in timeOptions" :key="item.value"
                                         :label="item.label"
-                                        :value="item.value"
-                                        :key="item.value">
+                                        :value="item.value">
                                 </el-option>
                             </el-select>
                         </div>
@@ -230,8 +233,8 @@
 
                 <span slot="footer" class="dialog-footer">
                     <el-button type="primary" @click="prev" v-if="active>0">上一步</el-button>
-                    <el-button type="primary" v-if="active<4" @click="next">下一步</el-button>
-                    <el-button type="primary" v-if="active>=4" :disabled="isFinish" @click="finish">创建</el-button>
+                    <el-button type="primary" v-if="active<3" @click="next"  :disabled="NotEmpty">下一步</el-button>
+                    <el-button type="primary" v-if="active>=3" :disabled="isFinish" @click="finish">创建</el-button>
                 </span>
             </el-dialog>
 
@@ -299,6 +302,10 @@
                 </span>
             </el-dialog>
         </div>
+
+        <div class="operStage">
+            <div></div>
+        </div>
     </div>
 
 </template>
@@ -325,7 +332,7 @@
                 password:'',
                 networkname:'',
                 privateip:'',
-                privatename:'',
+                brand:50,
                 publicip:'',
                 promptMessage:'',
                 active:0,
@@ -510,6 +517,7 @@
             },
             finish(){
                 this.dialogVisible = false;
+                confirmData = {}
                 let loadingInstance = Loading.service({
                     text:'拼命创建中...'
                 })
@@ -572,7 +580,18 @@
                 console.log(item);
             },
             calculationPay(){
-                util.calculationPay(this);
+                var url = 'device/QueryBillingPrice.do';
+                let params = {};
+                params.cpunum = this.CPUNum;
+                params.memory = this.CPUCache.cache;
+                params.disk = this.disk;
+                params.value = this.value;
+                params.timevalue = this.timeValue;
+                params.bandwidth = this.bandwidth;
+                var attrOptions = {
+                    money:'cost'
+                }
+                util.post(url,params,this,attrOptions)
             },
             handleCommand(type){
                 console.log(type);
@@ -844,11 +863,29 @@
                     }
                 )
                 console.log(row);
+            },
+            linkHost(row){
+                this.$http.get('information/consoleVirtualMachine.do?vmid='+row.computerid).then(
+                    response=>{
+                        if(response.ok==true&&response.status==200&&response.body.status==1){
+                            console.log(response.body.result);
+                            window.open(response.body.result,'linkHost','location=no,width:750,height:600,left:100');
+                        }else{
+                            Message({
+                                message:response.body.message,
+                                type:'error'
+                            });
+                        }
+                    }
+                )
             }
         },
         computed:{
             isFinish:function(){
                 return !(this.zone&&this.network);
+            },
+            NotEmpty:function(){
+                return !this.networkname.length>0;
             }
         }
     }

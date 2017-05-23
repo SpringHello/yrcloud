@@ -24,6 +24,13 @@
                 </li>
             </ul>
         </header>
+        <div style="height:500px;">
+            <my-carousel>
+                <div v-for="item in 4" :key="item">
+                    <h1>{{item}}</h1>
+                </div>
+            </my-carousel>
+        </div>
         <y-menu></y-menu>
         <router-view></router-view>
     </div>

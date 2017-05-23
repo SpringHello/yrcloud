@@ -2,8 +2,8 @@
     <div class="wapper">
         <div class="operStage">
             <el-button type="primary" @click="openDialog">创建公网</el-button>
-            <el-button type="primary" v-if="selectRow!=null&&!selectRow.computerid" @click="setNAT">设置静态NAT</el-button>
-            <el-button type="primary" v-if="selectRow!=null&&selectRow.computerid" @click="unbindVisible = true">解除静态NAT</el-button>
+            <el-button type="primary" v-if="selectRow!=null&&!selectRow.loadbalanceroleid" @click="setNAT">设置静态NAT</el-button>
+            <el-button type="primary" v-if="selectRow!=null&&!!selectRow.loadbalanceroleid" @click="unbindVisible = true">解除静态NAT</el-button>
             <el-button disabled="disabled" type="primary" @click="deletePublic=true">删除公网</el-button>
 
             <div class="table">

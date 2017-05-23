@@ -38235,6 +38235,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -38255,7 +38258,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             password: '',
             networkname: '',
             privateip: '',
-            privatename: '',
+            brand: 50,
             publicip: '',
             promptMessage: '',
             active: 0,
@@ -38502,7 +38505,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             console.log(item);
         },
         calculationPay: function calculationPay() {
-            __WEBPACK_IMPORTED_MODULE_6__util_util_js__["a" /* default */].calculationPay(this);
+            var url = 'device/QueryBillingPrice.do';
+            var params = {};
+            params.cpunum = this.CPUNum;
+            params.memory = this.CPUCache.cache;
+            params.disk = this.disk;
+            params.value = this.value;
+            params.timevalue = this.timeValue;
+            params.bandwidth = this.bandwidth;
+            var attrOptions = {
+                money: 'cost'
+            };
+            __WEBPACK_IMPORTED_MODULE_6__util_util_js__["a" /* default */].post(url, params, this, attrOptions);
         },
         handleCommand: function handleCommand(type) {
             var _this4 = this;
@@ -38780,11 +38794,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 });
             });
             console.log(row);
+        },
+        linkHost: function linkHost(row) {
+            this.$http.get('information/consoleVirtualMachine.do?vmid=' + row.computerid).then(function (response) {
+                if (response.ok == true && response.status == 200 && response.body.status == 1) {
+                    console.log(response.body.result);
+                    window.open(response.body.result, 'linkHost', 'location=no,width:750,height:600,left:100');
+                } else {
+                    __WEBPACK_IMPORTED_MODULE_1_element_ui_lib_message___default()({
+                        message: response.body.message,
+                        type: 'error'
+                    });
+                }
+            });
         }
     },
     computed: {
         isFinish: function isFinish() {
             return !(this.zone && this.network);
+        },
+        NotEmpty: function NotEmpty() {
+            return !this.networkname.length > 0;
         }
     }
 });
@@ -41062,10 +41092,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 //import alert from './package/alert/index.js';
 
+//const host = resolve => require(['./components/host/host.vue'],resolve);
 
+//const VPC = resolve => require(['./components/network/VPC.vue'],resolve);
 
+//const subnetwork = resolve => require(['./components/network/subnetwork.vue'],resolve);
 
+//const publicnetwork = resolve => require(['./components/network/publicnetwork.vue'],resolve);
 
+//const snapshot = resolve => require(['./components/snapshot/snapshot.vue'],resolve);
 
 
 
@@ -55796,14 +55831,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.openDialog
     }
-  }, [_vm._v("创建公网")]), _vm._v(" "), (_vm.selectRow != null && !_vm.selectRow.computerid) ? _c('el-button', {
+  }, [_vm._v("创建公网")]), _vm._v(" "), (_vm.selectRow != null && !_vm.selectRow.loadbalanceroleid) ? _c('el-button', {
     attrs: {
       "type": "primary"
     },
     on: {
       "click": _vm.setNAT
     }
-  }, [_vm._v("设置静态NAT")]) : _vm._e(), _vm._v(" "), (_vm.selectRow != null && _vm.selectRow.computerid) ? _c('el-button', {
+  }, [_vm._v("设置静态NAT")]) : _vm._e(), _vm._v(" "), (_vm.selectRow != null && !!_vm.selectRow.loadbalanceroleid) ? _c('el-button', {
     attrs: {
       "type": "primary"
     },
@@ -56210,6 +56245,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _vm._v(" "), _c('el-table-column', {
     attrs: {
+      "prop": "disksize",
+      "label": "磁盘大小（G）",
+      "width": "100",
+      "show-overflow-tooltip": ""
+    }
+  }), _vm._v(" "), _c('el-table-column', {
+    attrs: {
       "width": "120",
       "prop": "caseTpye",
       "label": "购买方式",
@@ -56238,7 +56280,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "fixed": "right",
       "label": "操作",
-      "width": "100"
+      "width": "170"
     },
     scopedSlots: _vm._u([{
       key: "default",
@@ -56253,7 +56295,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
               _vm.showInformation(scope.row)
             }
           }
-        }, [_vm._v("查看主机")])]
+        }, [_vm._v("查看主机")]), _vm._v(" "), _c('el-button', {
+          attrs: {
+            "type": "text",
+            "size": "small"
+          },
+          on: {
+            "click": function($event) {
+              _vm.linkHost(scope.row)
+            }
+          }
+        }, [_vm._v("远程连接")])]
       }
     }])
   })], 1)], 1), _vm._v(" "), _c('el-dialog', {
@@ -56300,15 +56352,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "title": "网络选择"
     }
-  }), _vm._v(" "), _c('el-step', {
-    attrs: {
-      "title": "取名"
-    }
   })], 1)], 1), _vm._v(" "), (_vm.active == 0) ? _c('div', {
     staticClass: "confWapper"
   }, [_c('div', {
     staticStyle: {
-      "width": "50px",
+      "width": "75px",
       "text-align": "center",
       "font-size": "16px",
       "line-height": "34px",
@@ -56327,13 +56375,37 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.zoneOptions), function(item) {
     return _c('el-option', {
-      key: item.id,
       attrs: {
         "label": item.name,
         "value": item.id
       }
     })
-  }))], 1) : _vm._e(), _vm._v(" "), (_vm.active == 1) ? _c('div', {
+  }))], 1) : _vm._e(), _vm._v(" "), (_vm.active == 0) ? _c('div', {
+    staticClass: "confWapper flex"
+  }, [_c('div', {
+    staticStyle: {
+      "width": "75px",
+      "text-align": "center",
+      "font-size": "16px",
+      "line-height": "34px",
+      "font-weight": "400"
+    }
+  }, [_vm._v("主机名：")]), _vm._v(" "), _c('div', {
+    staticStyle: {
+      "width": "38%"
+    }
+  }, [_c('el-input', {
+    attrs: {
+      "placeholder": "请输入主机名"
+    },
+    model: {
+      value: (_vm.networkname),
+      callback: function($$v) {
+        _vm.networkname = $$v
+      },
+      expression: "networkname"
+    }
+  })], 1)]) : _vm._e(), _vm._v(" "), (_vm.active == 1) ? _c('div', {
     staticClass: "confWapper"
   }, [_c('div', {
     staticStyle: {
@@ -56369,7 +56441,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })], 1), _vm._v(" "), _vm._l((_vm.OS[_vm.radio]), function(item) {
     return _c('div', {
-      key: item.templatename,
       staticClass: "OSClass",
       class: {
         active: item == _vm.select
@@ -56392,7 +56463,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("CPU")]), _vm._v(" "), _vm._l((_vm.CPU), function(item) {
     return _c('div', {
-      key: item.cpuNum,
       staticClass: "item-type",
       class: {
         active: item.cpuNum == _vm.CPUNum
@@ -56405,7 +56475,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_vm._v(_vm._s(item.cpuNum) + "核")])
   })], 2) : _vm._e()]), _vm._v(" "), _vm._l((_vm.CPU), function(item) {
     return (_vm.active == 2 && item.cpuNum == _vm.CPUNum) ? _c('div', {
-      key: item.cache,
       staticClass: "confWapper flex"
     }, [_c('div', {
       staticStyle: {
@@ -56417,7 +56486,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_vm._v("内存")]), _vm._v(" "), _vm._l((item.cache), function(ite) {
       return _c('div', {
-        key: ite.cache,
         staticClass: "item-type",
         class: {
           active: ite == _vm.CPUCache
@@ -56443,10 +56511,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticStyle: {
       "width": "70%"
     }
-  }, [_c('el-slider', {
+  }, [_c('my-slider', {
     attrs: {
-      "step": 10,
-      "show-input": ""
+      "unit": "G",
+      "points": [30, 50]
     },
     on: {
       "change": _vm.calculationPay
@@ -56484,68 +56552,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.networkOptions), function(item) {
     return _c('el-option', {
-      key: item.ipsegmentid,
       attrs: {
         "label": item.name,
         "value": item.ipsegmentid
       }
     })
-  }))], 1) : _vm._e(), _vm._v(" "), (_vm.active == 3) ? _c('div', {
-    staticClass: "confWapper flex"
-  }, [_c('div', {
-    staticStyle: {
-      "width": "50px",
-      "text-align": "center",
-      "font-size": "16px",
-      "line-height": "34px",
-      "font-weight": "400"
-    }
-  }, [_vm._v("带宽")]), _vm._v(" "), _c('div', {
-    staticStyle: {
-      "width": "70%"
-    }
-  }, [_c('el-slider', {
-    attrs: {
-      "show-input": ""
-    },
-    on: {
-      "change": _vm.calculationPay
-    },
-    model: {
-      value: (_vm.bandwidth),
-      callback: function($$v) {
-        _vm.bandwidth = $$v
-      },
-      expression: "bandwidth"
-    }
-  })], 1)]) : _vm._e(), _vm._v(" "), (_vm.active == 4) ? _c('div', {
-    staticClass: "confWapper flex"
-  }, [_c('div', {
-    staticStyle: {
-      "width": "50px",
-      "text-align": "center",
-      "font-size": "16px",
-      "line-height": "34px",
-      "font-weight": "400"
-    }
-  }, [_vm._v("输入虚拟机名字：")]), _vm._v(" "), _c('div', {
-    staticStyle: {
-      "width": "70%"
-    }
-  }, [_c('el-input', {
-    attrs: {
-      "placeholder": "请输入内容"
-    },
-    model: {
-      value: (_vm.networkname),
-      callback: function($$v) {
-        _vm.networkname = $$v
-      },
-      expression: "networkname"
-    }
-  })], 1)]) : _vm._e()], 2), _vm._v(" "), _c('div', {
+  }))], 1) : _vm._e()], 2), _vm._v(" "), _c('div', {
     staticClass: "display"
-  }, [_c('div', [_c('label', [_vm._v("CPU : ")]), _c('span', [_vm._v(_vm._s(_vm.CPUNum) + "核")])]), _vm._v(" "), _c('div', [_c('label', [_vm._v("内存 : ")]), _c('span', [_vm._v(_vm._s(_vm.CPUCache.cache) + "G")])]), _vm._v(" "), _c('div', [_c('label', [_vm._v("硬盘 : ")]), _c('span', [_vm._v(_vm._s(_vm.disk) + "G")])]), _vm._v(" "), _c('div', [_c('label', [_vm._v("网络 : ")]), _c('span', [_vm._v(_vm._s(_vm.networkName))])]), _vm._v(" "), _c('div', [_c('label', [_vm._v("带宽 : ")]), _c('span', [_vm._v(_vm._s(_vm.bandwidth))])]), _vm._v(" "), (_vm.value == 'current') ? _c('div', [_c('p', [_vm._v("按需付费，根据资源的实际使用量收费，精确到秒。先使用后付费。")])]) : _vm._e(), _vm._v(" "), (_vm.value == 'month') ? _c('div', [_c('p', [_vm._v("计费单位为月，平均每小时价格低于按量。适用于不间断业务场景。")])]) : _vm._e(), _vm._v(" "), (_vm.value == 'year') ? _c('div', [_c('p', [_vm._v("计费单位为年，平均每小时价格低于实时计费。适用于不间断业务场景。")])]) : _vm._e(), _vm._v(" "), _c('div', [_c('label', [_vm._v("计费方式 : ")]), _vm._v(" "), _c('el-select', {
+  }, [_c('div', [_c('label', [_vm._v("CPU : ")]), _c('span', [_vm._v(_vm._s(_vm.CPUNum) + "核")])]), _vm._v(" "), _c('div', [_c('label', [_vm._v("内存 : ")]), _c('span', [_vm._v(_vm._s(_vm.CPUCache.cache) + "G")])]), _vm._v(" "), _c('div', [_c('label', [_vm._v("硬盘 : ")]), _c('span', [_vm._v(_vm._s(_vm.disk) + "G")])]), _vm._v(" "), _c('div', [_c('label', [_vm._v("网络 : ")]), _c('span', [_vm._v(_vm._s(_vm.networkName))])]), _vm._v(" "), (_vm.value == 'current') ? _c('div', [_c('p', [_vm._v("按需付费，根据资源的实际使用量收费，精确到秒。先使用后付费。")])]) : _vm._e(), _vm._v(" "), (_vm.value == 'month') ? _c('div', [_c('p', [_vm._v("计费单位为月，平均每小时价格低于按量。适用于不间断业务场景。")])]) : _vm._e(), _vm._v(" "), (_vm.value == 'year') ? _c('div', [_c('p', [_vm._v("计费单位为年，平均每小时价格低于实时计费。适用于不间断业务场景。")])]) : _vm._e(), _vm._v(" "), _c('div', [_c('label', [_vm._v("计费方式 : ")]), _vm._v(" "), _c('el-select', {
     staticClass: "eselect",
     attrs: {
       "placeholder": "请选择"
@@ -56602,14 +56616,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.prev
     }
-  }, [_vm._v("上一步")]) : _vm._e(), _vm._v(" "), (_vm.active < 4) ? _c('el-button', {
+  }, [_vm._v("上一步")]) : _vm._e(), _vm._v(" "), (_vm.active < 3) ? _c('el-button', {
     attrs: {
-      "type": "primary"
+      "type": "primary",
+      "disabled": _vm.NotEmpty
     },
     on: {
       "click": _vm.next
     }
-  }, [_vm._v("下一步")]) : _vm._e(), _vm._v(" "), (_vm.active >= 4) ? _c('el-button', {
+  }, [_vm._v("下一步")]) : _vm._e(), _vm._v(" "), (_vm.active >= 3) ? _c('el-button', {
     attrs: {
       "type": "primary",
       "disabled": _vm.isFinish
@@ -58517,11 +58532,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "index": "myorder"
     }
-  }, [_vm._v("我的工单")]), _vm._v(" "), _c('el-menu-item', {
-    attrs: {
-      "index": "less"
-    }
-  }, [_vm._v("less")])], 2), _vm._v(" "), _c('el-menu-item', {
+  }, [_vm._v("我的工单")])], 2), _vm._v(" "), _c('el-menu-item', {
     attrs: {
       "index": "log"
     }

@@ -5,12 +5,18 @@ import App from './app.vue';
 import {Button,Menu,Submenu,MenuItem,Table,TableColumn,Tooltip,Dialog,Steps,Step,RadioGroup,
     RadioButton,Select,Option,Slider,Switch,Dropdown,DropdownMenu,DropdownItem,Input,Radio,DatePicker,Pagination,Carousel,carouselItem,Form,FormItem} from 'element-ui';
 import slider from './package/slider/index.js';
+import carousel from './package/carousel/index.js';
 //import alert from './package/alert/index.js';
 import icon from '../assets/iconfont.css';
+//const host = resolve => require(['./components/host/host.vue'],resolve);
 import host from './components/host/host.vue';
+//const VPC = resolve => require(['./components/network/VPC.vue'],resolve);
 import VPC from './components/network/VPC.vue';
+//const subnetwork = resolve => require(['./components/network/subnetwork.vue'],resolve);
 import subnetwork from './components/network/subnetwork.vue';
+//const publicnetwork = resolve => require(['./components/network/publicnetwork.vue'],resolve);
 import publicnetwork from './components/network/publicnetwork.vue';
+//const snapshot = resolve => require(['./components/snapshot/snapshot.vue'],resolve);
 import snapshot from './components/snapshot/snapshot.vue';
 import disk from './components/disk/disk.vue';
 import recharge from './components/recharge/recharge.vue';
@@ -77,6 +83,7 @@ Vue.use(carouselItem);
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(slider);
+Vue.use(carousel);
 //Vue.use(alert);
 new Vue({
     render:h => h(App),
