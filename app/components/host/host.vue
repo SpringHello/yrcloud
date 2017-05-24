@@ -335,6 +335,7 @@
                 brand:50,
                 publicip:'',
                 promptMessage:'',
+                privatename:'',
                 active:0,
                 radio: 'Ubuntu',
                 select: 'Ubuntu Server 14.04 LTS x86_64',
@@ -457,7 +458,18 @@
             },
             next(){
                 this.active++;
-                util.calculationPay(this);
+                var url = 'device/QueryBillingPrice.do';
+                let params = {};
+                params.cpunum = this.CPUNum;
+                params.memory = this.CPUCache.cache;
+                params.disk = this.disk;
+                params.value = this.value;
+                params.timevalue = this.timeValue;
+                params.bandwidth = this.bandwidth;
+                var attrOptions = {
+                    money:'cost'
+                }
+                util.post(url,params,this,attrOptions)
             },
             change(select){
 
@@ -517,7 +529,6 @@
             },
             finish(){
                 this.dialogVisible = false;
-                confirmData = {}
                 let loadingInstance = Loading.service({
                     text:'拼命创建中...'
                 })
@@ -536,10 +547,10 @@
                         if(response.body.status==1){
                             loadingInstance.close();
                             Message({
-                                message:'创建成功',
+                                message:'创建订单成功',
                                 type:'success'
                             });
-                            this.tableData = response.body.result;
+                            this.$router.push('order')
                         }else if(response.body.status==2){
                             loadingInstance.close();
                             Message({
@@ -549,7 +560,7 @@
                         }else{
                             loadingInstance.close();
                             Message({
-                                message:'创建超时',
+                                message:'创建订单超时',
                                 type:'error'
                             });
                         }

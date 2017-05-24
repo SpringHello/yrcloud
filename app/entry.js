@@ -3,9 +3,10 @@ import VueRouter from 'vue-router';
 import VueResource from 'vue-resource';
 import App from './app.vue';
 import {Button,Menu,Submenu,MenuItem,Table,TableColumn,Tooltip,Dialog,Steps,Step,RadioGroup,
-    RadioButton,Select,Option,Slider,Switch,Dropdown,DropdownMenu,DropdownItem,Input,Radio,DatePicker,Pagination,Carousel,carouselItem,Form,FormItem} from 'element-ui';
+    RadioButton,Select,Option,Slider,Switch,Dropdown,DropdownMenu,DropdownItem,Input,Radio,DatePicker,Pagination,Carousel,CarouselItem,Form,FormItem} from 'element-ui';
 import slider from './package/slider/index.js';
 import carousel from './package/carousel/index.js';
+import carouselItem from './package/carouselItem/index.js';
 //import alert from './package/alert/index.js';
 import icon from '../assets/iconfont.css';
 //const host = resolve => require(['./components/host/host.vue'],resolve);
@@ -30,6 +31,7 @@ import neworder from './components/workOrder/newOrder.vue';
 import myorder from './components/workOrder/myOrder.vue';
 import balance from './components/balance/balance.vue';
 import less from './components/less/less.vue';
+import order from './components/order/order.vue';
 //import Slider from './package/slider/src/index.vue';
 const router = new VueRouter({
     routes: [
@@ -50,6 +52,7 @@ const router = new VueRouter({
         { path: '/myorder', component: myorder },
         { path: '/balance', component: balance },
         { path: '/less', component: less },
+        { path: '/order', component: order },
 
     ]
 })
@@ -79,11 +82,12 @@ Vue.use(Radio);
 Vue.use(DatePicker);
 Vue.use(Pagination);
 Vue.use(Carousel);
-Vue.use(carouselItem);
+Vue.use(CarouselItem);
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(slider);
 Vue.use(carousel);
+Vue.use(carouselItem);
 //Vue.use(alert);
 new Vue({
     render:h => h(App),

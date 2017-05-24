@@ -57,7 +57,7 @@
         <div class="operStage" v-if="showType=='host'">
             <div class="table">
                 <el-table
-                        :data="hostData"
+                        :data="tableDataDisk"
                         border
                         tooltip-effect="dark"
                         style="width: 100%">
@@ -67,12 +67,23 @@
                             show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column
+                            prop="privateip"
+                            label="私网"
+                            show-overflow-tooltip>
+                    </el-table-column>
+                    <el-table-column
+                            prop="publicip"
+                            label="公网"
+                            show-overflow-tooltip>
+                    </el-table-column>
+                    <el-table-column
                             prop="belongnetworkname"
-                            label="所属子网">
+                            label="所属子网"
+                            show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column
                             prop="createtime"
-                            label="创建时间"
+                            label="创业时间"
                             show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column

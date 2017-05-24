@@ -60,6 +60,10 @@ span[data-v-08b8686c]:last-of-type{
 }
 
 
+.carousel[data-v-1f6579ab] {
+  height: 100%;
+}
+
 .item i[data-v-27a09525]{
     font-size: 18px;
     width: 7px;
@@ -702,6 +706,13 @@ th[data-v-3967d71a]{
 
 .operStage[data-v-2eeb13c5] {
   background-color: red;
+}
+
+.cost-wrapper[data-v-abde037a] {
+  text-align: right;
+}
+.cost-wrapper span[data-v-abde037a] {
+  font-size: 19px;
 }
 
 /*# sourceMappingURL=main.css.map*/
