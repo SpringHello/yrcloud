@@ -540,10 +540,10 @@
                         if(response.ok==true&&response.status==200){
                             if(response.body.status==1){
                                 Message({
-                                    message:'创建成功',
+                                    message:'创建订单成功',
                                     type:'success'
                                 });
-                                this.tableData = response.body.result;
+                                this.$router.push('order')
                             }else{
                                 Message({
                                     message: response.body.message,

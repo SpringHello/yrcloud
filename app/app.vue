@@ -24,7 +24,7 @@
                 </li>
             </ul>
         </header>
-        <div style="height:500px;">
+        <div style="height:500px;width:500px;">
             <my-carousel>
                 <my-carousel-item v-for="item in 4" :key="item">
                     <div>

@@ -193,7 +193,8 @@
                 url += '&displaytext='+this.VPCdescription;
                 url += '&value='+this.value;
                 url += '&timevalue='+this.timeValue;
-                util.getEmitter(this,url,'正在创建VPC...','创建成功','创建失败');
+                util.get(url,this,{},'创建订单成功');
+                this.$router.push('order')
                 //interfaceUtil.createVPC(this);
             }
         },

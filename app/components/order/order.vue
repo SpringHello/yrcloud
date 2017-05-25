@@ -30,6 +30,11 @@
                     <el-table-column
                             prop="原价"
                             label="原价"
+                            show-overflow-tooltip>ordercreatetime
+                    </el-table-column>
+                    <el-table-column
+                            prop="ordercreatetime"
+                            label="创建日期"
                             show-overflow-tooltip>
                     </el-table-column>
                 </el-table>
@@ -56,6 +61,7 @@
                     this.tableData = response.body.result.map(function(item){
                         var obj = JSON.parse(item.display);
                         obj.ordernumber = item.ordernumber;
+                        obj.ordercreatetime = item.ordercreatetime;
                         return obj
                     })
                     console.log(this);
@@ -81,12 +87,9 @@
                 var order = this.multipleSelection.reduce(function(prev,current){
                     return `${prev},${current.ordernumber}`;
                 },'');
+                order = order.slice(1);
                 var url = `information/payOrder.do?order=${order}`;
-                this.$http.get(url).then(response=>{
-
-                },response=>{
-
-                })
+                util.getEmitter(this,url,'正在支付',{})
             }
         },
         computed:{

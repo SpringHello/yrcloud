@@ -1,5 +1,5 @@
 <template>
-    <div class="carousel-item">
+    <div class="carousel-item" :class="{isActive:active}" :style="{transform:`translateX(${translate}px)`}">
         <slot></slot>
     </div>
 </template>
@@ -8,10 +8,19 @@
     export default{
         name:'my-carousel-item',
         data(){
-            return{}
+            return{
+                translate:0,
+                active:false
+            }
         },
         created(){
 
+        },
+        methods:{
+            calculatePosition(index,activeIndex,parentWidth){
+                this.active = index===activeIndex;
+                this.translate = (index-activeIndex)*parentWidth
+            }
         }
     }
 </script>
@@ -23,5 +32,14 @@
         top:0px;
         width:100%;
         height:100%;
+        -webkit-transition: 1s;
+        -moz-transition: 1s;
+        -ms-transition: 1s;
+        -o-transition: 1s;
+        transition: 1s;
+        z-index:1;
+    }
+    .isActive{
+        z-index:2
     }
 </style>

@@ -271,7 +271,8 @@
                 url += '&value='+this.value;
                 url += '&timevalue='+this.timeValue;
                 url += '&brand='+this.brand;
-                util.getEmitter(this,url,'正在创建公网...','创建成功','创建失败');
+                util.get(url,this,{},'创建订单成功');
+                this.$router.push('order')
             }
         },
         computed:{
