@@ -25,12 +25,18 @@
                 <el-menu-item index="feelog">消费详情</el-menu-item>
                 <el-menu-item index="feeest">消费预估</el-menu-item>
                 <el-menu-item index="order">未支付订单</el-menu-item>
-                <el-menu-item index="finishorder">已支付订单</el-menu-item>
+                <el-menu-item index="alreayOrder">已支付订单</el-menu-item>
             </el-submenu>
             <el-submenu index="7">
                 <template slot="title">工单</template>
                 <el-menu-item index="neworder">新建工单</el-menu-item>
                 <el-menu-item index="myorder">我的工单</el-menu-item>
+                <!--el-menu-item index="less">less</el-menu-item-->
+            </el-submenu>
+            <el-submenu index="8">
+                <template slot="title">认证中心</template>
+                <el-menu-item index="neworder">个人认证</el-menu-item>
+                <el-menu-item index="myorder">企业认证</el-menu-item>
                 <!--el-menu-item index="less">less</el-menu-item-->
             </el-submenu>
             <el-menu-item index="log">操作日志</el-menu-item>

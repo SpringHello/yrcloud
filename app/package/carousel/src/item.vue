@@ -1,5 +1,5 @@
 <template>
-    <div class="carousel-item" :class="{isActive:active}" :style="{transform:`translateX(${translate}px)`}">
+    <div class="carousel-item" :class="{isActive:active,prevActive:prevActive}" :style="{transform:`translateX(${translate}px)`}">
         <slot></slot>
     </div>
 </template>
@@ -10,16 +10,28 @@
         data(){
             return{
                 translate:0,
-                active:false
+                active:false,
+                prevActive:false,
             }
         },
         created(){
 
         },
         methods:{
-            calculatePosition(index,activeIndex,parentWidth){
+            calculatePosition(index,activeIndex,total,parentWidth){
+                this.prevActive = this.active;
                 this.active = index===activeIndex;
-                this.translate = (index-activeIndex)*parentWidth
+                if(Math.abs(index-activeIndex)>0)
+                    if(index-activeIndex>0)
+                        this.translate = parentWidth
+                    else
+                        this.translate = -parentWidth
+                if(activeIndex==total-1&&index==0)
+                    this.translate = parentWidth;
+                if(activeIndex==0&&index==total-1)
+                    this.translate = -parentWidth;
+                if(index==activeIndex)
+                    this.translate = 0;
             }
         }
     }
@@ -32,14 +44,18 @@
         top:0px;
         width:100%;
         height:100%;
-        -webkit-transition: 1s;
-        -moz-transition: 1s;
-        -ms-transition: 1s;
-        -o-transition: 1s;
-        transition: 1s;
+        -webkit-transition: .5s;
+        -moz-transition: .5s;
+        -ms-transition: .5s;
+        -o-transition: .5s;
+        transition: .5s;
         z-index:1;
+        opacity: 1;
     }
     .isActive{
+        z-index:3
+    }
+    .prevActive{
         z-index:2
     }
 </style>

@@ -25,7 +25,7 @@
             </ul>
         </header>
         <div style="height:500px;width:500px;">
-            <my-carousel>
+            <my-carousel :dots="true">
                 <my-carousel-item v-for="item in 4" :key="item">
                     <div>
                         <h1>{{item}}</h1>
@@ -76,7 +76,7 @@
     }
 </script>
 
-<style scoped>
+<style rel="stylesheet/less" lang="less">
     div{
         height:100%;
     }

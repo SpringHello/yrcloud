@@ -6,12 +6,7 @@
                         :data="tableData"
                         border
                         tooltip-effect="dark"
-                        style="width: 100%"
-                        @selection-change="handleSelectionChange">
-                    <el-table-column
-                            type="selection"
-                            width="55">
-                    </el-table-column>
+                        style="width: 100%">
                     <el-table-column
                             prop="资源"
                             label="资源"
@@ -30,7 +25,7 @@
                     <el-table-column
                             prop="原价"
                             label="原价"
-                            show-overflow-tooltip>ordercreatetime
+                            show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column
                             prop="ordercreatetime"
@@ -39,8 +34,6 @@
                     </el-table-column>
                 </el-table>
             </div>
-            <div class="cost-wrapper"><span>总计支付:{{cost}}</span></div>
-            <div><el-button type="primary" @click="pay">支付</el-button></div>
         </div>
     </div>
 </template>
@@ -57,7 +50,7 @@
             }
         },
         created(){
-            this.$http.get('information/searchOrder.do').then(response=>{
+            this.$http.get('information/searchOrderAlreadyPay.do').then(response=>{
                 if(response.ok==true&&response.status==200&&response.body.status==1){
                     this.tableData = response.body.result.map(function(item){
                         var obj = JSON.parse(item.display);
@@ -81,28 +74,8 @@
             });
         },
         methods:{
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-            },
-            pay(){
-                var order = this.multipleSelection.reduce(function(prev,current){
-                    return `${prev},${current.ordernumber}`;
-                },'');
-                order = order.slice(1);
-                var url = `information/payOrder.do?order=${order}`;
-                util.getEmitter(this,url,'正在支付',{})
-                this.$router.push('alreayOrder');
-            }
         },
         computed:{
-            cost(){
-                if(this.multipleSelection.length<1)
-                    return 0;
-                return this.multipleSelection.reduce(function(previous,current){
-
-                    return previous + Number.parseFloat(current['原价']);
-                },0)
-            }
         }
     }
 </script>
