@@ -1,5 +1,5 @@
 <template>
-    <div class="carousel-item" :class="{isActive:active,prevActive:prevActive}" :style="{transform:`translateX(${translate}px)`}">
+    <div class="carousel-item" :class="{isActive:active,prevActive:prevActive,fadeOut:!active}" :style="{transform:`translateX(${translate}px)`}">
         <slot></slot>
     </div>
 </template>
@@ -32,6 +32,9 @@
                     this.translate = -parentWidth;
                 if(index==activeIndex)
                     this.translate = 0;
+            },
+            fade(index,activeIndex){
+                this.active = index===activeIndex;
             }
         }
     }
@@ -50,12 +53,14 @@
         -o-transition: .5s;
         transition: .5s;
         z-index:1;
-        opacity: 1;
     }
     .isActive{
         z-index:3
     }
     .prevActive{
         z-index:2
+    }
+    .fadeOut{
+        opacity:0;
     }
 </style>

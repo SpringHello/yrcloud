@@ -24,15 +24,15 @@
                 </li>
             </ul>
         </header>
-        <div style="height:500px;width:500px;">
+        <!--div style="height:500px;width:500px;">
             <my-carousel :dots="true">
-                <my-carousel-item v-for="item in 4" :key="item">
+                <my-carousel-item v-for="item in 9" :key="item">
                     <div>
                         <h1>{{item}}</h1>
                     </div>
                 </my-carousel-item>
             </my-carousel>
-        </div>
+        </div-->
         <y-menu></y-menu>
         <router-view></router-view>
     </div>
@@ -76,7 +76,7 @@
     }
 </script>
 
-<style rel="stylesheet/less" lang="less">
+<style rel="stylesheet/less" lang="less" scoped>
     div{
         height:100%;
     }

@@ -71,9 +71,9 @@
         <div class="operStage">
             <label>您可能还需要以下产品</label>
 
-            <div class="block">
-                <el-carousel height="350px" :interval=8000>
-                    <el-carousel-item v-for="item in items" :key="item">
+            <div class="block" style="height:350px">
+                <my-carousel :interval=1000 effect="fade">
+                    <my-carousel-item v-for="item in items" :key="item">
                         <div style="display: flex;flex-wrap:wrap;justify-content:space-between;height:100%;padding: 0px 25px;">
                             <div class="flex-item" v-for="i in item" :key="i.title">
                                 <span>{{i.title}}</span>
@@ -81,8 +81,8 @@
                                 <a href="#/home">&nbsp;&nbsp;&nbsp;&nbsp;立即选购></a>
                             </div>
                         </div>
-                    </el-carousel-item>
-                </el-carousel>
+                    </my-carousel-item>
+                </my-carousel>
             </div>
         </div>
     </div>

@@ -101,10 +101,17 @@
         },
         watch:{
             activeIndex(){
-                const parentWidth = this.$el.offsetWidth;
-                this.items.forEach((item,index)=>{
-                    item.calculatePosition(index,this.activeIndex,this.total,parentWidth);
-                })
+                if(this.effect=='scrollx'){
+                    const parentWidth = this.$el.offsetWidth;
+                    this.items.forEach((item,index)=>{
+                        item.calculatePosition(index,this.activeIndex,this.total,parentWidth);
+                    })
+                }else{
+                    this.items.forEach((item,index)=>{
+                        item.fade(index,this.activeIndex);
+                    })
+                }
+
             }
         }
     }
