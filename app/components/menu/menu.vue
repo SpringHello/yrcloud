@@ -35,8 +35,8 @@
             </el-submenu>
             <el-submenu index="8">
                 <template slot="title">认证中心</template>
-                <el-menu-item index="neworder">个人认证</el-menu-item>
-                <el-menu-item index="myorder">企业认证</el-menu-item>
+                <el-menu-item index="personalattest">个人认证</el-menu-item>
+                <el-menu-item index="enterprisesattest">企业认证</el-menu-item>
                 <!--el-menu-item index="less">less</el-menu-item-->
             </el-submenu>
             <el-menu-item index="log">操作日志</el-menu-item>

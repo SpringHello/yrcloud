@@ -3,7 +3,7 @@ import VueRouter from 'vue-router';
 import VueResource from 'vue-resource';
 import App from './app.vue';
 import {Button,Menu,Submenu,MenuItem,Table,TableColumn,Tooltip,Dialog,Steps,Step,RadioGroup,
-    RadioButton,Select,Option,Slider,Switch,Dropdown,DropdownMenu,DropdownItem,Input,Radio,DatePicker,Pagination,Carousel,CarouselItem,Form,FormItem} from 'element-ui';
+    RadioButton,Select,Option,Slider,Switch,Dropdown,DropdownMenu,DropdownItem,Input,Radio,DatePicker,Pagination,Carousel,CarouselItem,Form,FormItem,Upload} from 'element-ui';
 import slider from './package/slider/index.js';
 import carousel from './package/carousel/index.js';
 import carouselItem from './package/carouselItem/index.js';
@@ -33,6 +33,8 @@ import balance from './components/balance/balance.vue';
 import less from './components/less/less.vue';
 import order from './components/order/order.vue';
 import alreayOrder from './components/order/finishOrder.vue';
+import personalattest from './components/attest/personalattest.vue';
+import enterprisesattest from './components/attest/enterprisesattest.vue';
 //import Slider from './package/slider/src/index.vue';
 const router = new VueRouter({
     routes: [
@@ -55,7 +57,8 @@ const router = new VueRouter({
         { path: '/less', component: less },
         { path: '/order', component: order },
         { path: '/alreayOrder', component: alreayOrder },
-
+        { path: '/personalattest', component: personalattest },
+        { path: '/enterprisesattest', component: enterprisesattest },
     ]
 })
 Vue.use(VueResource);
@@ -87,6 +90,7 @@ Vue.use(Carousel);
 Vue.use(CarouselItem);
 Vue.use(Form);
 Vue.use(FormItem);
+Vue.use(Upload);
 Vue.use(slider);
 Vue.use(carousel);
 Vue.use(carouselItem);
